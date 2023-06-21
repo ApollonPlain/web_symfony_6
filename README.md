@@ -7,5 +7,7 @@ The goal of this project is to build a web platform services with symfony 6, wit
 - [ ] Dashboard Page
 - [x] Register form + verifying email
 - [x] Login form
-- [ ] Reset password
-- [ ] Configure le mailer
+- [x] Reset password
+- [ ] Configure mailer
+- [ ] CRUD for services
+- [ ] Present page for ous services
