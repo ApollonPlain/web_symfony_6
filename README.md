@@ -8,6 +8,8 @@ The goal of this project is to build a web platform services with symfony 6, wit
 - [x] Register form + verifying email
 - [x] Login form
 - [x] Reset password
+- [x] Initié DB + DB test
+- [ ] Créer les tests pour les routes [Symfony Best practices](https://symfony.com/doc/6.0/best_practices.html#tests) 
 - [ ] Configure mailer
 - [ ] CRUD for services
 - [ ] Present page for ous services
