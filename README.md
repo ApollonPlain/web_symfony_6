@@ -13,3 +13,10 @@ The goal of this project is to build a web platform services with symfony 6, wit
 - [ ] Configure mailer
 - [ ] CRUD for services
 - [ ] Present page for ous services
+
+
+MQC:
+- Create entity
+- Create MCQ
+- Results
+- Stats
