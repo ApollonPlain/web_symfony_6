@@ -62,11 +62,14 @@ class Quiz
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $answerG = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isG = null;
+
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $category;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $isG = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $sources = null;
 
     public function getId(): ?int
     {
@@ -261,6 +264,18 @@ class Quiz
     public function setCategory(?int $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getSources(): ?string
+    {
+        return $this->sources;
+    }
+
+    public function setSources(?string $sources): static
+    {
+        $this->sources = $sources;
 
         return $this;
     }
