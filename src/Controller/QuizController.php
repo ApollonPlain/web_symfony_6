@@ -40,7 +40,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_quiz_show', methods: ['GET'])]
+    #[Route('/show/{id}', name: 'app_quiz_show', methods: ['GET'])]
     public function show(Quiz $quiz): Response
     {
         return $this->render('quiz/show.html.twig', [
@@ -48,7 +48,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_quiz_edit', methods: ['GET', 'POST'])]
+    #[Route('/q/{id}/edit', name: 'app_quiz_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Quiz $quiz, QuizRepository $quizRepository): Response
     {
         $form = $this->createForm(QuizType::class, $quiz);
@@ -66,7 +66,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_quiz_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'app_quiz_delete', methods: ['POST'])]
     public function delete(Request $request, Quiz $quiz, QuizRepository $quizRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$quiz->getId(), $request->request->get('_token'))) {
@@ -74,5 +74,21 @@ class QuizController extends AbstractController
         }
 
         return $this->redirectToRoute('app_quiz_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/mcq', name: 'app_quiz_mcq', methods: ['GET'])]
+    public function mcq(QuizRepository $quizRepository): Response
+    {
+        // get all quiz
+        $quizzes = $quizRepository->findAll();
+// shuffle records
+        shuffle($quizzes);
+
+
+        $quiz = $quizzes[0];
+
+        return $this->render('quiz/quiz.html.twig', [
+            'quiz' => $quiz,
+        ]);
     }
 }

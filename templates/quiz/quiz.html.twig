@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz{% endblock %}
+
+{% block body %}
+    <h1>Quiz</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ quiz.id }}</td>
+        </tr>
+        <tr>
+            <th>Question</th>
+            <td>{{ quiz.question }}</td>
+        </tr>
+
+        <tr>
+            <th>AnswerA</th>
+            <td>{{ quiz.answerA }}</td>
+        </tr>
+
+        <tr>
+            <th>AnswerB</th>
+            <td>{{ quiz.answerB }}</td>
+        </tr>
+        {% if quiz.answerC is not null %}
+            <tr>
+                <th>AnswerC</th>
+                <td>{{ quiz.answerC }}</td>
+            </tr>
+        {% endif %}
+        {% if quiz.answerD is not null %}
+            <tr>
+                <th>AnswerD</th>
+                <td>{{ quiz.answerD }}</td>
+            </tr>
+        {% endif %}
+        {% if quiz.answerE is not null %}
+            <tr>
+                <th>AnswerE</th>
+                <td>{{ quiz.answerE }}</td>
+            </tr>
+        {% endif %}
+        {% if quiz.answerF is not null %}
+            <tr>
+                <th>AnswerF</th>
+                <td>{{ quiz.answerF }}</td>
+            </tr>
+        {% endif %}
+        {% if quiz.answerG is not null %}
+            <tr>
+                <th>AnswerG</th>
+                <td>{{ quiz.answerG }}</td>
+            </tr>
+        {% endif %}
+            <tr>
+                <th>Category</th>
+                <td>{{ quiz.category }}</td>
+        </tr>
+
+        <tr>
+            <th>Sources</th>
+            <td>{{ quiz.sources }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_quiz_index') }}">back to list</a>
+
+    <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}">edit</a>
+
+    {{ include('quiz/_delete_form.html.twig') }}
+{% endblock %}
