@@ -6,6 +6,12 @@ use App\Repository\QuizRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+enum Category: int
+{
+    case HTTP = 0;
+    case PHP = 1;
+}
+
 #[ORM\Entity(repositoryClass: QuizRepository::class)]
 class Quiz
 {
@@ -55,6 +61,9 @@ class Quiz
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $answerG = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $category;
 
     #[ORM\Column(nullable: true)]
     private ?bool $isG = null;
@@ -240,6 +249,18 @@ class Quiz
     public function setIsG(?bool $isG): static
     {
         $this->isG = $isG;
+
+        return $this;
+    }
+
+    public function getCategory(): ?int
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?int $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
