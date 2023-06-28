@@ -28,6 +28,7 @@ class QuizType extends AbstractType
             ->add('answerG')
             ->add('category')
             ->add('isG')
+            ->add('sources')
         ;
     }
 

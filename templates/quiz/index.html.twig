@@ -25,6 +25,7 @@
                 <th>AnswerG</th>
                 <th>Category</th>
                 <th>IsG</th>
+                <th>Sources</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -48,6 +49,7 @@
                 <td>{{ quiz.answerG }}</td>
                 <td>{{ quiz.category }}</td>
                 <td>{{ quiz.isG ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.sources }}</td>
                 <td>
                     <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}">show</a>
                     <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}">edit</a>
