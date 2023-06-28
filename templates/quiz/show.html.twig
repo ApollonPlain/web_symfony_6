@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz{% endblock %}
+
+{% block body %}
+    <h1>Quiz</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ quiz.id }}</td>
+            </tr>
+            <tr>
+                <th>Question</th>
+                <td>{{ quiz.question }}</td>
+            </tr>
+            <tr>
+                <th>AnswerA</th>
+                <td>{{ quiz.answerA }}</td>
+            </tr>
+            <tr>
+                <th>IsA</th>
+                <td>{{ quiz.isA ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>AnswerB</th>
+                <td>{{ quiz.answerB }}</td>
+            </tr>
+            <tr>
+                <th>IsB</th>
+                <td>{{ quiz.isB ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>AnswerC</th>
+                <td>{{ quiz.answerC }}</td>
+            </tr>
+            <tr>
+                <th>IsC</th>
+                <td>{{ quiz.isC ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>AnswerD</th>
+                <td>{{ quiz.answerD }}</td>
+            </tr>
+            <tr>
+                <th>IsD</th>
+                <td>{{ quiz.isD ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>AnswerE</th>
+                <td>{{ quiz.answerE }}</td>
+            </tr>
+            <tr>
+                <th>IsE</th>
+                <td>{{ quiz.isE ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>AnswerF</th>
+                <td>{{ quiz.answerF }}</td>
+            </tr>
+            <tr>
+                <th>IsF</th>
+                <td>{{ quiz.isF ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>AnswerG</th>
+                <td>{{ quiz.answerG }}</td>
+            </tr>
+            <tr>
+                <th>Category</th>
+                <td>{{ quiz.category }}</td>
+            </tr>
+            <tr>
+                <th>IsG</th>
+                <td>{{ quiz.isG ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_quiz_index') }}">back to list</a>
+
+    <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}">edit</a>
+
+    {{ include('quiz/_delete_form.html.twig') }}
+{% endblock %}

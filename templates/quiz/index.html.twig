@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz index{% endblock %}
+
+{% block body %}
+    <h1>Quiz index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Question</th>
+                <th>AnswerA</th>
+                <th>IsA</th>
+                <th>AnswerB</th>
+                <th>IsB</th>
+                <th>AnswerC</th>
+                <th>IsC</th>
+                <th>AnswerD</th>
+                <th>IsD</th>
+                <th>AnswerE</th>
+                <th>IsE</th>
+                <th>AnswerF</th>
+                <th>IsF</th>
+                <th>AnswerG</th>
+                <th>Category</th>
+                <th>IsG</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for quiz in quizzes %}
+            <tr>
+                <td>{{ quiz.id }}</td>
+                <td>{{ quiz.question }}</td>
+                <td>{{ quiz.answerA }}</td>
+                <td>{{ quiz.isA ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.answerB }}</td>
+                <td>{{ quiz.isB ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.answerC }}</td>
+                <td>{{ quiz.isC ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.answerD }}</td>
+                <td>{{ quiz.isD ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.answerE }}</td>
+                <td>{{ quiz.isE ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.answerF }}</td>
+                <td>{{ quiz.isF ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.answerG }}</td>
+                <td>{{ quiz.category }}</td>
+                <td>{{ quiz.isG ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}">show</a>
+                    <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="18">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_quiz_new') }}">Create new</a>
+{% endblock %}
