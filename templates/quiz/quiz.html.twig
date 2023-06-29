@@ -55,6 +55,13 @@
                 <td>{{ quiz.answerG }}</td>
             </tr>
         {% endif %}
+        {% if quiz.answerH is not null %}
+            <tr>
+                <th>AnswerH</th>
+                <td>{{ quiz.answerH }}</td>
+            </tr>
+        {% endif %}
+
             <tr>
                 <th>Category</th>
                 <td>{{ quiz.category }}</td>

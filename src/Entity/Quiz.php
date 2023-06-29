@@ -65,6 +65,13 @@ class Quiz
     #[ORM\Column(nullable: true)]
     private ?bool $isG = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $answerH = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isH = null;
+
+
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $category;
 
@@ -252,6 +259,30 @@ class Quiz
     public function setIsG(?bool $isG): static
     {
         $this->isG = $isG;
+
+        return $this;
+    }
+
+    public function getAnswerH(): ?string
+    {
+        return $this->answerH;
+    }
+
+    public function setAnswerH(?string $answerH): static
+    {
+        $this->answerH = $answerH;
+
+        return $this;
+    }
+
+    public function isIsH(): ?bool
+    {
+        return $this->isH;
+    }
+
+    public function setIsH(?bool $isH): static
+    {
+        $this->isH = $isH;
 
         return $this;
     }
