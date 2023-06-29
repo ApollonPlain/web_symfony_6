@@ -23,8 +23,10 @@
                 <th>AnswerF</th>
                 <th>IsF</th>
                 <th>AnswerG</th>
-                <th>Category</th>
                 <th>IsG</th>
+                <th>AnswerH</th>
+                <th>IsH</th>
+                <th>Category</th>
                 <th>Sources</th>
                 <th>actions</th>
             </tr>
@@ -47,8 +49,10 @@
                 <td>{{ quiz.answerF }}</td>
                 <td>{{ quiz.isF ? 'Yes' : 'No' }}</td>
                 <td>{{ quiz.answerG }}</td>
-                <td>{{ quiz.category }}</td>
                 <td>{{ quiz.isG ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.answerH }}</td>
+                <td>{{ quiz.isH ? 'Yes' : 'No' }}</td>
+                <td>{{ quiz.category }}</td>
                 <td>{{ quiz.sources }}</td>
                 <td>
                     <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}">show</a>

@@ -26,8 +26,10 @@ class QuizType extends AbstractType
             ->add('answerF')
             ->add('isF')
             ->add('answerG')
-            ->add('category')
             ->add('isG')
+            ->add('answerH')
+            ->add('isH')
+            ->add('category')
             ->add('sources')
         ;
     }
