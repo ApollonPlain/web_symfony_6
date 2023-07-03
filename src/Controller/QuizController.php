@@ -84,15 +84,26 @@ class QuizController extends AbstractController
 
         if ($request->isMethod(Request::METHOD_POST)) {
             $quizSent = $request->request->all();
+
             $quiz = $quizRepository->findOneBy(['id' => $quizSent['id']]);
-            dd($quiz);
+
+            $goodResponse = false;
+            if ($quizService->isMQCGood($quiz, $quizSent)) {
+                $goodResponse = true;
+            }
+
+            return $this->render('quiz/quiz.html.twig', [
+                'quiz' => $quiz,
+                'answers' => $quizService->getRightsAnswers($quiz),
+                'goodResponse' => $goodResponse,
+            ]);
         }
 
 
 
 
         $quizzes = $quizRepository->findAll();
-//        shuffle($quizzes);
+        shuffle($quizzes);
 
         $quiz = $quizzes[0];
 

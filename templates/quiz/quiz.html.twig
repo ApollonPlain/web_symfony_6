@@ -9,6 +9,18 @@
         <br />
 
 
+        {% if goodResponse is defined %}
+
+            {% if goodResponse %}
+                <p class="text-success">Correct</p>
+            {% else %}
+                <p class="text-danger">Wrong</p>
+
+            {% endif %}
+
+
+        {% endif %}
+
         <form action="{{ path('app_quiz_mcq') }}" method="post" name="{{ quiz.id }}">
             <input name="id" value="{{ quiz.id }}" class="d-none">
             {% for answer in answers %}
@@ -26,14 +38,19 @@
             </div>
 
         </form>
-        <div class="col-7"></div>
+        <div class="col-6"></div>
 
-        <div class="col-md-1 mt-3">
+        <div class="col-md-2 mt-3">
             <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary">back to list</a>
         </div>
-        <div class="col-md-1 mt-3">
+        <div class="col-md-2 mt-3">
             <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-secondary">edit</a>
         </div>
+
+        <div class="col-md-2 mt-3">
+            <a href="{{ path('app_quiz_mcq') }}" class="btn btn-secondary">Next MCQ</a>
+        </div>
+
 
     </div>
 
