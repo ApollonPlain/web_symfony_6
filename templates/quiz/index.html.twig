@@ -5,6 +5,10 @@
 {% block body %}
     <h1>Quiz index</h1>
 
+    <a href="{{ path('app_quiz_mcq') }}">MCQ</a>
+    <a href="{{ path('app_quiz_new') }}">Create new</a>
+
+
     <table class="table">
         <thead>
             <tr>
@@ -67,5 +71,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_quiz_new') }}">Create new</a>
 {% endblock %}

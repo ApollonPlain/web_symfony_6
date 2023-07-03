@@ -77,15 +77,25 @@ class QuizController extends AbstractController
     }
 
     #[Route('/mcq', name: 'app_quiz_mcq', methods: ['GET'])]
-    public function mcq(QuizRepository $quizRepository): Response
+    public function mcq(QuizRepository $quizRepository, Request $request): Response
     {
-        // get all quiz
+        $form = $this->createForm(QuizType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $quizSent = $form->getData();
+            $quiz = $quizRepository->findOneBy(['id' => $quizSent->id]);
+        }
+
+
+
+
         $quizzes = $quizRepository->findAll();
-// shuffle records
         shuffle($quizzes);
 
-
         $quiz = $quizzes[0];
+
+
 
         return $this->render('quiz/quiz.html.twig', [
             'quiz' => $quiz,
