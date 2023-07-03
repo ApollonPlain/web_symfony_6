@@ -19,6 +19,8 @@
             {% endif %}
 
 
+            {{ quiz.sources }}
+
         {% endif %}
 
         <form action="{{ path('app_quiz_mcq') }}" method="post" name="{{ quiz.id }}">
