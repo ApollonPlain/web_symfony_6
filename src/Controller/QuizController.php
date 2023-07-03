@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Quiz;
 use App\Form\QuizType;
 use App\Repository\QuizRepository;
+use App\Service\QuizService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,29 +77,30 @@ class QuizController extends AbstractController
         return $this->redirectToRoute('app_quiz_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/mcq', name: 'app_quiz_mcq', methods: ['GET'])]
-    public function mcq(QuizRepository $quizRepository, Request $request): Response
+    #[Route('/mcq', name: 'app_quiz_mcq', methods: ['GET', 'POST'])]
+    public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService): Response
     {
-        $form = $this->createForm(QuizType::class);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $quizSent = $form->getData();
-            $quiz = $quizRepository->findOneBy(['id' => $quizSent->id]);
+
+        if ($request->isMethod(Request::METHOD_POST)) {
+            $quizSent = $request->request->all();
+            $quiz = $quizRepository->findOneBy(['id' => $quizSent['id']]);
+            dd($quiz);
         }
 
 
 
 
         $quizzes = $quizRepository->findAll();
-        shuffle($quizzes);
+//        shuffle($quizzes);
 
         $quiz = $quizzes[0];
 
-
+        $quizAnswersRandomised = $quizService->getRandomizedAnswers($quiz);
 
         return $this->render('quiz/quiz.html.twig', [
             'quiz' => $quiz,
+            'answers' => $quizAnswersRandomised,
         ]);
     }
 }
