@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuizRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -77,6 +79,14 @@ class Quiz
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $sources = null;
+
+    #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: ResultMCQ::class, orphanRemoval: true)]
+    private Collection $resultMCQs;
+
+    public function __construct()
+    {
+        $this->resultMCQs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -307,6 +317,36 @@ class Quiz
     public function setSources(?string $sources): static
     {
         $this->sources = $sources;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ResultMCQ>
+     */
+    public function getResultMCQs(): Collection
+    {
+        return $this->resultMCQs;
+    }
+
+    public function addResultMCQ(ResultMCQ $resultMCQ): static
+    {
+        if (!$this->resultMCQs->contains($resultMCQ)) {
+            $this->resultMCQs->add($resultMCQ);
+            $resultMCQ->setQuiz($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResultMCQ(ResultMCQ $resultMCQ): static
+    {
+        if ($this->resultMCQs->removeElement($resultMCQ)) {
+            // set the owning side to null (unless already changed)
+            if ($resultMCQ->getQuiz() === $this) {
+                $resultMCQ->setQuiz(null);
+            }
+        }
 
         return $this;
     }

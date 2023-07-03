@@ -6,6 +6,7 @@ use App\Entity\Quiz;
 use App\Form\QuizType;
 use App\Repository\QuizRepository;
 use App\Service\QuizService;
+use App\Service\ResultMCQService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,7 +79,7 @@ class QuizController extends AbstractController
     }
 
     #[Route('/mcq', name: 'app_quiz_mcq', methods: ['GET', 'POST'])]
-    public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService): Response
+    public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService): Response
     {
 
 
@@ -91,6 +92,8 @@ class QuizController extends AbstractController
             if ($quizService->isMQCGood($quiz, $quizSent)) {
                 $goodResponse = true;
             }
+
+            $resultMCQService->saveResultMCQ($quiz, $goodResponse);
 
             return $this->render('quiz/quiz.html.twig', [
                 'quiz' => $quiz,
