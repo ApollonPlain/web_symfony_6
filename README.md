@@ -1,6 +1,6 @@
 # web_symfony_6
 The goal of this project is to build a web platform services with symfony 6, with of methodology of Test Driven Design
-
+At the same time I am preparing symfony Certification. I created a MCQ for questions and answers on the subject. The database with questions is private for legal reason. 
 
 ## Features :
 
@@ -10,13 +10,13 @@ The goal of this project is to build a web platform services with symfony 6, wit
 - [x] Reset password
 - [x] Initié DB + DB test
 - [ ] Créer les tests pour les routes [Symfony Best practices](https://symfony.com/doc/6.0/best_practices.html#tests) 
-- [ ] Configure mailer
-- [ ] CRUD for services
+- [x] Configure mailer
+- [x] CRUD for services
 - [ ] Present page for ous services
 
 
-MQC:
-- Create entity
-- Create MCQ
-- Results
-- Stats
+MCQ:
+- [x] Create entity
+- [x] Create MCQ
+- [x] Results
+- [ ] Stats
