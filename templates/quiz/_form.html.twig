@@ -1,6 +1,216 @@
-<div class="col-md-12">
+<div class="col-md-12 px-5">
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+
+    <div class="form-group mx-3 my-2">
+        {{ form_label(form.question) }}
+        {{ form_widget(form.question, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.question) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.question) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mt-3">
+        {{ form_label(form.answerA) }}
+        {{ form_widget(form.answerA, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.answerA) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.answerA) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mb-3">
+        {{ form_label(form.isA) }}
+        {{ form_widget(form.isA, {'attr': {'class': ''}}) }}
+
+        <small>{{ form_help(form.isA) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.isA) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mt-3">
+        {{ form_label(form.answerB) }}
+        {{ form_widget(form.answerB, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.answerB) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.answerB) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mb-3">
+        {{ form_label(form.isB) }}
+        {{ form_widget(form.isB, {'attr': {'class': ''}}) }}
+
+        <small>{{ form_help(form.isB) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.isB) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mt-3">
+        {{ form_label(form.answerC) }}
+        {{ form_widget(form.answerC, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.answerC) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.answerC) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mb-3">
+        {{ form_label(form.isC) }}
+        {{ form_widget(form.isC, {'attr': {'class': ''}}) }}
+
+        <small>{{ form_help(form.isC) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.isC) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mt-3">
+        {{ form_label(form.answerD) }}
+        {{ form_widget(form.answerD, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.answerD) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.answerD) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mb-3">
+        {{ form_label(form.isD) }}
+        {{ form_widget(form.isD, {'attr': {'class': ''}}) }}
+
+        <small>{{ form_help(form.isD) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.isD) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mt-3">
+        {{ form_label(form.answerE) }}
+        {{ form_widget(form.answerE, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.answerE) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.answerE) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mb-3">
+        {{ form_label(form.isE) }}
+        {{ form_widget(form.isE, {'attr': {'class': ''}}) }}
+
+        <small>{{ form_help(form.isE) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.isE) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mt-3">
+        {{ form_label(form.answerF) }}
+        {{ form_widget(form.answerF, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.answerF) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.answerF) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mb-3">
+        {{ form_label(form.isF) }}
+        {{ form_widget(form.isF, {'attr': {'class': ''}}) }}
+
+        <small>{{ form_help(form.isF) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.isF) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mt-3">
+        {{ form_label(form.answerG) }}
+        {{ form_widget(form.answerG, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.answerG) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.answerG) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mb-3">
+        {{ form_label(form.isG) }}
+        {{ form_widget(form.isG, {'attr': {'class': ''}}) }}
+
+        <small>{{ form_help(form.isG) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.isG) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mt-3">
+        {{ form_label(form.answerH) }}
+        {{ form_widget(form.answerH, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.answerH) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.answerH) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 mb-3">
+        {{ form_label(form.isH) }}
+        {{ form_widget(form.isH, {'attr': {'class': ''}}) }}
+
+        <small>{{ form_help(form.isH) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.isH) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 my-2">
+        {{ form_label(form.category) }}
+        {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.category) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.category) }}
+        </div>
+    </div>
+
+    <div class="form-group mx-3 my-2">
+        {{ form_label(form.sources) }}
+        {{ form_widget(form.sources, {'attr': {'class': 'form-control'}}) }}
+
+        <small>{{ form_help(form.sources) }}</small>
+
+        <div class="form-error">
+            {{ form_errors(form.sources) }}
+        </div>
+    </div>
+
+{#    {{ form_widget(form, {'attr': {'class': 'form-group'}}) }}#}
     <button type="button" class="btn btn-primary">{{ button_label|default('Save') }}</button>
 
 {{ form_end(form) }}
