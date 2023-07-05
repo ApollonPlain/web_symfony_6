@@ -5,7 +5,9 @@
 {% block body %}
     <h1>Quiz : {{ quiz.id }}</h1>
     <div class="row px-5">
-        <div class="col-12 center py-3">Question : {{ quiz.question }}</div>
+        <div class="col-12 center py-3 form-group">Question :
+            <textarea class="form-control" style="min-height: 150px">{{ quiz.question }}</textarea>
+        </div>
         <br />
 
 
@@ -39,7 +41,14 @@
                 <button type="submit" class="btn btn-success">Send</button>
             </div>
 
+
+
         </form>
+        <div class="col-md-2 mt-2">
+            <a href="{{ path('app_quiz_mcq') }}" class="btn btn-secondary">Next MCQ</a>
+        </div>
+
+
         <div class="col-6"></div>
 
         <div class="col-md-2 mt-3">
@@ -49,9 +58,7 @@
             <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-secondary">edit</a>
         </div>
 
-        <div class="col-md-2 mt-3">
-            <a href="{{ path('app_quiz_mcq') }}" class="btn btn-secondary">Next MCQ</a>
-        </div>
+
 
 
     </div>
