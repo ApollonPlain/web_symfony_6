@@ -9,6 +9,25 @@
     <a href="{{ path('app_quiz_new') }}">Create new</a>
 
 
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Count QCM</th>
+            <th>Count Rights</th>
+            <th>Count Wrongs</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>{{ count_results }}</th>
+            <th>{{ count_results_true }}</th>
+            <th>{{ count_results_false }}</th>
+        </tr>
+    </tbody>
+
+
+
     <table class="table">
         <thead>
             <tr>

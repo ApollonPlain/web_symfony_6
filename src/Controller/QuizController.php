@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Quiz;
 use App\Form\QuizType;
 use App\Repository\QuizRepository;
+use App\Repository\ResultMCQRepository;
 use App\Service\QuizService;
 use App\Service\ResultMCQService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,10 +17,27 @@ use Symfony\Component\Routing\Annotation\Route;
 class QuizController extends AbstractController
 {
     #[Route('/', name: 'app_quiz_index', methods: ['GET'])]
-    public function index(QuizRepository $quizRepository): Response
+    public function index(QuizRepository $quizRepository, ResultMCQRepository $resultMCQRepository): Response
     {
+        $results = $resultMCQRepository->findAll();
+        $resultsTrue = $resultMCQRepository->findBy(['isCorrect' => true]);
+        $resultsFalse = $resultMCQRepository->findBy(['isCorrect' => false]);
+
+        $quizzes = $quizRepository->findAll();
+
+//        foreach ($quizzes as $key => $quiz) {
+//            $resultsQcm = $quiz->getResultMCQs();
+//
+//            var_dump($quiz->getId() . ' results :' . count($resultsQcm));
+//
+//        }
+//die;
+
         return $this->render('quiz/index.html.twig', [
-            'quizzes' => $quizRepository->findAll(),
+            'quizzes' => $quizzes,
+            'count_results' => count($results),
+            'count_results_true' => count($resultsTrue),
+            'count_results_false' => count($resultsFalse),
         ]);
     }
 

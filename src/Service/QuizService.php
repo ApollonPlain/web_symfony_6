@@ -13,51 +13,51 @@ class QuizService
             'id' => 'A'
         ];
 
-        if ($answerB = $quiz->getAnswerB()) {
+        if ($quiz->getAnswerB() !== null) {
             $quizAnswers[] = [
-                'answer' => $answerB,
+                'answer' => $quiz->getAnswerB(),
                 'id' => 'B'
             ];
         }
 
-        if ($answerC = $quiz->getAnswerC()) {
+        if ($quiz->getAnswerC() !== null) {
             $quizAnswers[] = [
-                'answer' => $answerC,
+                'answer' => $quiz->getAnswerC(),
                 'id' => 'C'
             ];
         }
 
-        if ($answerD = $quiz->getAnswerD()) {
+        if ($quiz->getAnswerD() !== null) {
             $quizAnswers[] = [
-                'answer' => $answerD,
+                'answer' => $quiz->getAnswerD(),
                 'id' => 'D'
             ];
         }
 
-        if ($answerE = $quiz->getAnswerE()) {
+        if ($quiz->getAnswerE() !== null) {
             $quizAnswers[] = [
-                'answer' => $answerE,
+                'answer' => $quiz->getAnswerE(),
                 'id' => 'E'
             ];
         }
 
-        if ($answerF = $quiz->getAnswerF()) {
+        if ($quiz->getAnswerF() !== null) {
             $quizAnswers[] = [
-                'answer' => $answerF,
+                'answer' => $quiz->getAnswerF(),
                 'id' => 'F'
             ];
         }
 
-        if ($answerG = $quiz->getAnswerG()) {
+        if ($quiz->getAnswerG() !== null) {
             $quizAnswers[] = [
-                'answer' => $answerG,
+                'answer' => $quiz->getAnswerG(),
                 'id' => 'G'
             ];
         }
 
-        if ($answerH = $quiz->getAnswerH()) {
+        if ($quiz->getAnswerH() !== null) {
             $quizAnswers[] = [
-                'answer' => $answerH,
+                'answer' => $quiz->getAnswerH(),
                 'id' => 'H'
             ];
         }
