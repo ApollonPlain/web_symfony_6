@@ -96,8 +96,8 @@ class QuizController extends AbstractController
         return $this->redirectToRoute('app_quiz_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/mcq', name: 'app_quiz_mcq', methods: ['GET', 'POST'])]
-    public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService): Response
+    #[Route('/mcq/{max}', name: 'app_quiz_mcq', methods: ['GET', 'POST'])]
+    public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, int $max = 0): Response
     {
 
 
@@ -117,22 +117,41 @@ class QuizController extends AbstractController
                 'quiz' => $quiz,
                 'answers' => $quizService->getRightsAnswers($quiz),
                 'goodResponse' => $goodResponse,
+                'max' => $max,
             ]);
         }
 
-
-
-
         $quizzes = $quizRepository->findAll();
-        shuffle($quizzes);
+//        dump(count($quizzes));
+        if ($max > 0) {
+            foreach ($quizzes as $key => $quiz) {
+                $countSuccess = 0;
+                foreach ($quiz->getResultMCQs() as $resultMCQ) {
+                    if ($resultMCQ->isIsCorrect()) {
+                        $countSuccess++;
+                    }
+                }
 
+                if ($countSuccess >= $max) {
+                    unset($quizzes[$key]);
+                }
+            }
+        }
+
+//        dd(count($quizzes));
+        if (count($quizzes) === 0) {
+            dd("No quiz found");
+        }
+        shuffle($quizzes);
         $quiz = $quizzes[0];
+
 
         $quizAnswersRandomised = $quizService->getRandomizedAnswers($quiz);
 
         return $this->render('quiz/quiz.html.twig', [
             'quiz' => $quiz,
             'answers' => $quizAnswersRandomised,
+            'max' => $max,
         ]);
     }
 }
