@@ -54,7 +54,7 @@ class QuizController extends AbstractController
             return $this->redirectToRoute('app_quiz_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('quiz/new.html.twig', [
+        return $this->render('quiz/new.html.twig', [
             'quiz' => $quiz,
             'form' => $form,
         ]);
@@ -80,7 +80,7 @@ class QuizController extends AbstractController
             return $this->redirectToRoute('app_quiz_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('quiz/edit.html.twig', [
+        return $this->render('quiz/edit.html.twig', [
             'quiz' => $quiz,
             'form' => $form,
         ]);
