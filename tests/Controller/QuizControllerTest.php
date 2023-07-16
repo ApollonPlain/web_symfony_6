@@ -179,33 +179,33 @@ class QuizControllerTest extends WebTestCase
 
     public function testRemove(): void
     {
-        $this->markTestIncomplete();
-
         $originalNumObjectsInRepository = count($this->repository->findAll());
 
         $fixture = new Quiz();
-        $fixture->setQuestion('My Title');
-        $fixture->setAnswerA('My Title');
-        $fixture->setIsA('My Title');
-        $fixture->setAnswerB('My Title');
-        $fixture->setIsB('My Title');
+        $fixture->setQuestion('Another question');
+        $fixture->setAnswerA('Wrong Answer');
+        $fixture->setIsA(false);
+        $fixture->setAnswerB('Good Answer');
+        $fixture->setIsB(true);
         $fixture->setAnswerC('My Title');
-        $fixture->setIsC('My Title');
+        $fixture->setIsC(false);
         $fixture->setAnswerD('My Title');
-        $fixture->setIsD('My Title');
+        $fixture->setIsD(false);
         $fixture->setAnswerE('My Title');
-        $fixture->setIsE('My Title');
+        $fixture->setIsE(false);
         $fixture->setAnswerF('My Title');
-        $fixture->setIsF('My Title');
+        $fixture->setIsF(false);
         $fixture->setAnswerG('My Title');
-        $fixture->setCategory('My Title');
-        $fixture->setIsG('My Title');
+        $fixture->setIsG(false);
+        $fixture->setAnswerH('My Title');
+        $fixture->setIsH(false);
+        $fixture->setCategory(null);
 
         $this->repository->save($fixture, true);
 
         self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()));
 
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
+        $this->client->request('GET', sprintf('%s%s', $this->path . 'show/', $fixture->getId()));
         $this->client->submitForm('Delete');
 
         self::assertSame($originalNumObjectsInRepository, count($this->repository->findAll()));
