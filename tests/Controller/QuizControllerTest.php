@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Test\Controller;
+namespace App\Tests\Controller;
 
+use App\Controller\QuizController;
 use App\Entity\Quiz;
 use App\Repository\QuizRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -12,6 +13,11 @@ class QuizControllerTest extends WebTestCase
     private KernelBrowser $client;
     private QuizRepository $repository;
     private string $path = '/quiz/';
+
+    private function createController(): QuizController
+    {
+        return new QuizController();
+    }
 
     protected function setUp(): void
     {
@@ -30,6 +36,9 @@ class QuizControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Quiz index');
 
+        $controller = $this->createController();
+        self::assertTrue(method_exists($controller, 'index'));
+
         // Use the $crawler to perform additional assertions e.g.
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
     }
@@ -38,28 +47,28 @@ class QuizControllerTest extends WebTestCase
     {
         $originalNumObjectsInRepository = count($this->repository->findAll());
 
-        $this->markTestIncomplete();
         $this->client->request('GET', sprintf('%snew', $this->path));
 
         self::assertResponseStatusCodeSame(200);
 
         $this->client->submitForm('Save', [
-            'quiz[question]' => 'Testing',
-            'quiz[answerA]' => 'Testing',
-            'quiz[isA]' => 'Testing',
+            'quiz[question]' => 'Title',
+            'quiz[answerA]' => 'Good Answer',
+            'quiz[isA]' => true,
             'quiz[answerB]' => 'Testing',
-            'quiz[isB]' => 'Testing',
+            'quiz[isB]' => false,
             'quiz[answerC]' => 'Testing',
-            'quiz[isC]' => 'Testing',
+            'quiz[isC]' => false,
             'quiz[answerD]' => 'Testing',
-            'quiz[isD]' => 'Testing',
+            'quiz[isD]' => false,
             'quiz[answerE]' => 'Testing',
-            'quiz[isE]' => 'Testing',
+            'quiz[isE]' => false,
             'quiz[answerF]' => 'Testing',
-            'quiz[isF]' => 'Testing',
+            'quiz[isF]' => false,
             'quiz[answerG]' => 'Testing',
-            'quiz[category]' => 'Testing',
-            'quiz[isG]' => 'Testing',
+            'quiz[isG]' => false,
+            'quiz[answerH]' => 'Testing',
+            'quiz[isH]' => false,
         ]);
 
         self::assertResponseRedirects('/quiz/');
@@ -69,28 +78,28 @@ class QuizControllerTest extends WebTestCase
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Quiz();
         $fixture->setQuestion('My Title');
-        $fixture->setAnswerA('My Title');
-        $fixture->setIsA('My Title');
+        $fixture->setAnswerA('Good Answer');
+        $fixture->setIsA(true);
         $fixture->setAnswerB('My Title');
-        $fixture->setIsB('My Title');
+        $fixture->setIsB(false);
         $fixture->setAnswerC('My Title');
-        $fixture->setIsC('My Title');
+        $fixture->setIsC(false);
         $fixture->setAnswerD('My Title');
-        $fixture->setIsD('My Title');
+        $fixture->setIsD(false);
         $fixture->setAnswerE('My Title');
-        $fixture->setIsE('My Title');
+        $fixture->setIsE(false);
         $fixture->setAnswerF('My Title');
-        $fixture->setIsF('My Title');
+        $fixture->setIsF(false);
         $fixture->setAnswerG('My Title');
-        $fixture->setCategory('My Title');
-        $fixture->setIsG('My Title');
-
+        $fixture->setIsG(false);
+        $fixture->setAnswerH('My Title');
+        $fixture->setIsH(false);
+        $fixture->setCategory(null);
         $this->repository->save($fixture, true);
 
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
+        $this->client->request('GET', sprintf('%s%s', $this->path . 'show/', $fixture->getId()));
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Quiz');
@@ -100,68 +109,72 @@ class QuizControllerTest extends WebTestCase
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Quiz();
         $fixture->setQuestion('My Title');
-        $fixture->setAnswerA('My Title');
-        $fixture->setIsA('My Title');
-        $fixture->setAnswerB('My Title');
-        $fixture->setIsB('My Title');
+        $fixture->setAnswerA('Wrong Answer');
+        $fixture->setIsA(false);
+        $fixture->setAnswerB('Good Answer');
+        $fixture->setIsB(true);
         $fixture->setAnswerC('My Title');
-        $fixture->setIsC('My Title');
+        $fixture->setIsC(false);
         $fixture->setAnswerD('My Title');
-        $fixture->setIsD('My Title');
+        $fixture->setIsD(false);
         $fixture->setAnswerE('My Title');
-        $fixture->setIsE('My Title');
+        $fixture->setIsE(false);
         $fixture->setAnswerF('My Title');
-        $fixture->setIsF('My Title');
+        $fixture->setIsF(false);
         $fixture->setAnswerG('My Title');
-        $fixture->setCategory('My Title');
-        $fixture->setIsG('My Title');
+        $fixture->setIsG(false);
+        $fixture->setAnswerH('My Title');
+        $fixture->setIsH(false);
+        $fixture->setCategory(null);
 
         $this->repository->save($fixture, true);
 
-        $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
+        $this->client->request('GET', sprintf('%s%s/edit', $this->path . 'q/', $fixture->getId()));
 
         $this->client->submitForm('Update', [
-            'quiz[question]' => 'Something New',
-            'quiz[answerA]' => 'Something New',
-            'quiz[isA]' => 'Something New',
-            'quiz[answerB]' => 'Something New',
-            'quiz[isB]' => 'Something New',
-            'quiz[answerC]' => 'Something New',
-            'quiz[isC]' => 'Something New',
-            'quiz[answerD]' => 'Something New',
-            'quiz[isD]' => 'Something New',
-            'quiz[answerE]' => 'Something New',
-            'quiz[isE]' => 'Something New',
-            'quiz[answerF]' => 'Something New',
-            'quiz[isF]' => 'Something New',
-            'quiz[answerG]' => 'Something New',
-            'quiz[category]' => 'Something New',
-            'quiz[isG]' => 'Something New',
+            'quiz[question]' => 'Title',
+            'quiz[answerA]' => 'Good Answer',
+            'quiz[isA]' => true,
+            'quiz[answerB]' => 'Wrong Answer',
+            'quiz[isB]' => false,
+            'quiz[answerC]' => 'Testing',
+            'quiz[isC]' => false,
+            'quiz[answerD]' => 'Testing',
+            'quiz[isD]' => false,
+            'quiz[answerE]' => 'Testing',
+            'quiz[isE]' => false,
+            'quiz[answerF]' => 'Testing',
+            'quiz[isF]' => false,
+            'quiz[answerG]' => 'Testing',
+            'quiz[isG]' => false,
+            'quiz[answerH]' => 'Testing',
+            'quiz[isH]' => false,
         ]);
 
         self::assertResponseRedirects('/quiz/');
 
         $fixture = $this->repository->findAll();
 
-        self::assertSame('Something New', $fixture[0]->getQuestion());
-        self::assertSame('Something New', $fixture[0]->getAnswerA());
-        self::assertSame('Something New', $fixture[0]->getIsA());
-        self::assertSame('Something New', $fixture[0]->getAnswerB());
-        self::assertSame('Something New', $fixture[0]->getIsB());
-        self::assertSame('Something New', $fixture[0]->getAnswerC());
-        self::assertSame('Something New', $fixture[0]->getIsC());
-        self::assertSame('Something New', $fixture[0]->getAnswerD());
-        self::assertSame('Something New', $fixture[0]->getIsD());
-        self::assertSame('Something New', $fixture[0]->getAnswerE());
-        self::assertSame('Something New', $fixture[0]->getIsE());
-        self::assertSame('Something New', $fixture[0]->getAnswerF());
-        self::assertSame('Something New', $fixture[0]->getIsF());
-        self::assertSame('Something New', $fixture[0]->getAnswerG());
-        self::assertSame('Something New', $fixture[0]->getCategory());
-        self::assertSame('Something New', $fixture[0]->getIsG());
+        self::assertSame('Title', $fixture[0]->getQuestion());
+        self::assertSame('Good Answer', $fixture[0]->getAnswerA());
+        self::assertSame(true, $fixture[0]->isIsA());
+        self::assertSame('Wrong Answer', $fixture[0]->getAnswerB());
+        self::assertSame(false, $fixture[0]->isIsB());
+        self::assertSame('Testing', $fixture[0]->getAnswerC());
+        self::assertSame(false, $fixture[0]->isIsC());
+        self::assertSame('Testing', $fixture[0]->getAnswerD());
+        self::assertSame(false, $fixture[0]->isIsD());
+        self::assertSame('Testing', $fixture[0]->getAnswerE());
+        self::assertSame(false, $fixture[0]->isIsE());
+        self::assertSame('Testing', $fixture[0]->getAnswerF());
+        self::assertSame(false, $fixture[0]->isIsF());
+        self::assertSame('Testing', $fixture[0]->getAnswerG());
+        self::assertSame(false, $fixture[0]->isIsG());
+        self::assertSame('Testing', $fixture[0]->getAnswerH());
+        self::assertSame(false, $fixture[0]->isIsH());
+        self::assertSame(null, $fixture[0]->getCategory());
     }
 
     public function testRemove(): void
