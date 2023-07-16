@@ -8,12 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-enum Category: int
-{
-    case HTTP = 0;
-    case PHP = 1;
-}
-
 #[ORM\Entity(repositoryClass: QuizRepository::class)]
 class Quiz
 {
