@@ -68,7 +68,7 @@ class QuizService
     }
 
 
-    public function isMQCGood(Quiz $quiz, array $quizSent)
+    public function isMQCGood(Quiz $quiz, array $quizSent): bool
     {
         if ((isset($quizSent['A']) && !$quiz->isIsA()) || (!isset($quizSent['A']) && $quiz->isIsA())) {
             return false;
@@ -110,7 +110,7 @@ class QuizService
         if ($quiz->isIsA()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerA(),
-                'id' => 'B'
+                'id' => 'A'
             ];
         }
 

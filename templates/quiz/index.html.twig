@@ -8,11 +8,10 @@
     <a href="{{ path('app_quiz_mcq') }}">MCQ</a>
     <a href="{{ path('app_quiz_new') }}">Create new</a>
 
-
-
 <table class="table">
     <thead>
         <tr>
+            <th>Count Quizzes</th>
             <th>Count QCM</th>
             <th>Count Rights</th>
             <th>Count Wrongs</th>
@@ -20,6 +19,7 @@
     </thead>
     <tbody>
         <tr>
+            <th>{{ quizzes|length }}</th>
             <th>{{ count_results }}</th>
             <th>{{ count_results_true }}</th>
             <th>{{ count_results_false }}</th>

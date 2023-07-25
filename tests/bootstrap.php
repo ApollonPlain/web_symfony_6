@@ -19,16 +19,23 @@ passthru(
     )
 );
 
+//passthru(
+//    sprintf(
+//        ' php bin/console doctrine:fixtures:load --env=%s << yes',
+//        $env
+//    )
+//);
+
 passthru(
     sprintf(
         'php bin/console doctrine:database:create --if-not-exists --env=%s',
         $env
     )
 );
-
-passthru(
-    sprintf(
-        'php bin/console doctrine:schema:create --env=%s',
-        $env
-    )
-);
+//
+//passthru(
+//    sprintf(
+//        'php bin/console doctrine:schema:create --env=%s',
+//        $env
+//    )
+//);
