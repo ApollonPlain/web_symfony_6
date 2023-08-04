@@ -9,8 +9,11 @@ use App\Repository\ResultMCQRepository;
 use App\Service\QuizService;
 use App\Service\ResultMCQService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/quiz')]
@@ -121,27 +124,8 @@ class QuizController extends AbstractController
             ]);
         }
 
-        $quizzes = $quizRepository->findAll();
-//        dump(count($quizzes));
-        if ($max > 0) {
-            foreach ($quizzes as $key => $quiz) {
-                $countSuccess = 0;
-                foreach ($quiz->getResultMCQs() as $resultMCQ) {
-                    if ($resultMCQ->isIsCorrect()) {
-                        $countSuccess++;
-                    }
-                }
+        $quizzes = $quizService->getQuizzes($max);
 
-                if ($countSuccess >= $max) {
-                    unset($quizzes[$key]);
-                }
-            }
-        }
-
-//        dd(count($quizzes));
-        if (count($quizzes) === 0) {
-            dd("No quiz found");
-        }
         shuffle($quizzes);
         $quiz = $quizzes[0];
 

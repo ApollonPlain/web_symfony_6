@@ -3,9 +3,15 @@
 namespace App\Service;
 
 use App\Entity\Quiz;
+use App\Repository\QuizRepository;
+use Phalcon\Di\Service;
 
 class QuizService
 {
+    public function __construct(private QuizRepository $quizRepository)
+    {
+    }
+
     public function getRandomizedAnswers(Quiz $quiz): array
     {
         $quizAnswers[] = [
@@ -164,6 +170,40 @@ class QuizService
         }
 
         return $quizAnswers ?? [];
+    }
+
+    public function getQuizzes(int $max = 0)
+    {
+        $quizzes = $this->quizRepository->findAll();
+
+        if ($max > 0) {
+            foreach ($quizzes as $key => $quiz) {
+                $countSuccess = 0;
+                foreach ($quiz->getResultMCQs() as $resultMCQ) {
+                    if ($resultMCQ->isIsCorrect()) {
+                        $countSuccess++;
+                    }
+                }
+
+                if ($countSuccess >= $max) {
+                    unset($quizzes[$key]);
+                }
+            }
+        }
+
+        if (count($quizzes) === 0) {
+            dd("No quiz found");
+        }
+
+        return $quizzes;
+    }
+
+    public function getQuizExam(int $size = 10, int $max = 0): array
+    {
+        $quizzes = $this->getQuizzes($max);
+
+        shuffle($quizzes);
+        return array_slice($quizzes, 0, $size);
     }
 
 }

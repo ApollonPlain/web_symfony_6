@@ -137,4 +137,31 @@ class QuizTest extends KernelTestCase
 
     }
 
+    public function testGetQuizz()
+    {
+        $quizzes = [];
+
+        for ($i = 10; $i; $i--) {
+            $quiz = new Quiz();
+            $quiz->setAnswerA('aaaa');
+            $quiz->setAnswerB('aaaa');
+            $quiz->setAnswerC('aaaa');
+            $quiz->setIsA(true);
+            $quiz->setIsB(false);
+            $quiz->setIsC(false);
+
+            $quizzes[] = $quiz;
+        }
+
+        $quizRepository = $this->createMock(QuizRepository::class);
+        $quizRepository->expects($this->any())
+            ->method('findAll')
+            ->willReturn($quizzes);
+
+        $size = 3;
+        $quizService = new QuizService($quizRepository);
+
+        self::assertSame($size, count($quizService->getQuizExam($size)));
+    }
+
 }

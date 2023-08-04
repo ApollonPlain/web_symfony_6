@@ -20,5 +20,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+#    QuizService:
+#        class: App\Service\QuizService
+#        arguments:
+#            - @App\Repository\QuizRepository
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

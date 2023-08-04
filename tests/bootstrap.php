@@ -12,26 +12,20 @@ if (file_exists(dirname(__DIR__).'/config/bootstrap.php')) {
 
 $env = 'test';
 
-passthru(
-    sprintf(
-        'php bin/console doctrine:database:drop --if-exists --force --env=%s',
-        $env
-    )
-);
-
 //passthru(
 //    sprintf(
-//        ' php bin/console doctrine:fixtures:load --env=%s << yes',
+//        'php bin/console doctrine:database:drop --if-exists --force --env=%s',
 //        $env
 //    )
 //);
 
-passthru(
-    sprintf(
-        'php bin/console doctrine:database:create --if-not-exists --env=%s',
-        $env
-    )
-);
+
+//passthru(
+//    sprintf(
+//        'php bin/console doctrine:database:create --if-not-exists --env=%s',
+//        $env
+//    )
+//);
 //
 //passthru(
 //    sprintf(
@@ -39,3 +33,9 @@ passthru(
 //        $env
 //    )
 //);
+passthru(
+    sprintf(
+        ' php bin/console doctrine:fixtures:load --env=%s << yes',
+        $env
+    )
+);
