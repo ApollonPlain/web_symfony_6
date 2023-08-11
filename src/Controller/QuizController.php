@@ -102,18 +102,12 @@ class QuizController extends AbstractController
     #[Route('/mcq/{max}', name: 'app_quiz_mcq', methods: ['GET', 'POST'])]
     public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, int $max = 0): Response
     {
-
-
         if ($request->isMethod(Request::METHOD_POST)) {
             $quizSent = $request->request->all();
 
             $quiz = $quizRepository->findOneBy(['id' => $quizSent['id']]);
 
-            $goodResponse = false;
-            if ($quizService->isMQCGood($quiz, $quizSent)) {
-                $goodResponse = true;
-            }
-
+            $goodResponse = $quizService->isMQCGood($quiz, $quizSent);
             $resultMCQService->saveResultMCQ($quiz, $goodResponse);
 
             return $this->render('quiz/quiz.html.twig', [
@@ -135,6 +129,66 @@ class QuizController extends AbstractController
         return $this->render('quiz/quiz.html.twig', [
             'quiz' => $quiz,
             'answers' => $quizAnswersRandomised,
+            'max' => $max,
+        ]);
+    }
+
+    #[Route('/exam/{max}/{number}', name: 'app_quiz_exam', methods: ['GET', 'POST'])]
+    public function exam(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, int $max = 0, int $number = 10): Response
+    {
+        if ($request->isMethod(Request::METHOD_POST)) {
+            $quizSent = $request->request->all();
+
+            $i = 0;
+            $quizzes = [];
+
+            foreach ($quizSent as $key => $value) {
+                $keyExploded = explode('-', $key);
+
+                if ($keyExploded[1] === 'id') {
+                    $idQuiz = $value;
+
+                    $quizzes[$idQuiz] = [];
+                } else {
+                    if (!isset($idQuiz)) {
+                        dd("Error id not set");
+                    }
+                    $quizzes[$idQuiz][$keyExploded[1]] = $value;
+                }
+            }
+
+            $goodResponse = [];
+            $answers = [];
+
+            foreach ($quizzes as $id => $quizAnswers) {
+                $quiz = $quizRepository->findOneBy(['id' => $id]);
+                $goodResponse[$id] = $quizService->isMQCGood($quiz, $quizAnswers);
+                $resultMCQService->saveResultMCQ($quiz, $goodResponse[$id]);
+                $answers[$id] = $quizService->getRightsAnswers($quiz);
+                $quizzes[$id] = $quiz;
+            }
+
+            return $this->render('quiz/exam.html.twig', [
+                'quizzes' => $quizzes,
+                'quizzesAnswers' => $answers,
+                'goodResponse' => $goodResponse,
+                'max' => $max,
+                'number' => $number,
+            ]);
+        }
+
+        $quizzes = $quizService->getQuizExam($number, $max);
+        shuffle($quizzes);
+
+        $quizzesAnswers = [];
+        foreach ($quizzes as $quiz) {
+            $quizzesAnswers[] = $quizService->getRandomizedAnswers($quiz);
+        }
+
+        return $this->render('quiz/exam.html.twig', [
+            'quizzes' => $quizzes,
+            'quizzesAnswers' => $quizzesAnswers,
+            'number' => $number,
             'max' => $max,
         ]);
     }

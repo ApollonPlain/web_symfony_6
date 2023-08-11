@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exam{% endblock %}
+
+
+{% block body %}
+    <h1>Exam question : {{ number }}</h1>
+
+    <form action="{{ path('app_quiz_exam', {max, number}) }}" method="post">
+
+        {% for key, quiz in quizzes %}
+            {% include 'quiz/quiz_exam.html.twig' ignore missing with { quiz, max, 'answers': quizzesAnswers[key], 'exam': true, key, 'goodResponse': goodResponse[key] ?? null } %}
+        {% endfor %}
+
+        <div class="row px-5">
+
+            <div class="col-md-3 mt-2">
+                <button type="submit" class="btn btn-success">Send</button>
+            </div>
+
+            <div class="col-6"></div>
+
+            <div class="col-md-2 mt-2">
+                <a href="{{ path('app_quiz_exam', { max, number }) }}" class="btn btn-secondary">Next Exam</a>
+            </div>
+
+            <div class="col-md-2 mt-3">
+                <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary">back to list</a>
+            </div>
+
+
+        </div>
+    </form>
+
+{% endblock %}
