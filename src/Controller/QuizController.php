@@ -9,11 +9,8 @@ use App\Repository\ResultMCQRepository;
 use App\Service\QuizService;
 use App\Service\ResultMCQService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/quiz')]
@@ -27,14 +24,6 @@ class QuizController extends AbstractController
         $resultsFalse = $resultMCQRepository->findBy(['isCorrect' => false]);
 
         $quizzes = $quizRepository->findAll();
-
-//        foreach ($quizzes as $key => $quiz) {
-//            $resultsQcm = $quiz->getResultMCQs();
-//
-//            var_dump($quiz->getId() . ' results :' . count($resultsQcm));
-//
-//        }
-//die;
 
         return $this->render('quiz/index.html.twig', [
             'quizzes' => $quizzes,
