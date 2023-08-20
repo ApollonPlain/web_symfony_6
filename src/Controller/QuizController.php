@@ -6,6 +6,7 @@ use App\Entity\Quiz;
 use App\Form\QuizType;
 use App\Repository\QuizRepository;
 use App\Repository\ResultMCQRepository;
+use App\Service\CheckService;
 use App\Service\QuizService;
 use App\Service\ResultMCQService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -89,7 +90,7 @@ class QuizController extends AbstractController
     }
 
     #[Route('/mcq/{max}', name: 'app_quiz_mcq', methods: ['GET', 'POST'])]
-    public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, int $max = 0): Response
+    public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, CheckService $checkService, int $max = 0): Response
     {
         if ($request->isMethod(Request::METHOD_POST)) {
             $quizSent = $request->request->all();
@@ -104,6 +105,7 @@ class QuizController extends AbstractController
                 'answers' => $quizService->getRightsAnswers($quiz),
                 'goodResponse' => $goodResponse,
                 'max' => $max,
+                'check' => $checkService->isCheckQuiz(),
             ]);
         }
 
@@ -123,7 +125,7 @@ class QuizController extends AbstractController
     }
 
     #[Route('/exam/{max}/{number}', name: 'app_quiz_exam', methods: ['GET', 'POST'])]
-    public function exam(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, int $max = 0, int $number = 10): Response
+    public function exam(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, CheckService $checkService, int $max = 0, int $number = 10): Response
     {
         if ($request->isMethod(Request::METHOD_POST)) {
             $quizSent = $request->request->all();
@@ -148,6 +150,7 @@ class QuizController extends AbstractController
 
             $goodResponse = [];
             $answers = [];
+            $checks = [];
 
             foreach ($quizzes as $id => $quizAnswers) {
                 $quiz = $quizRepository->findOneBy(['id' => $id]);
@@ -155,6 +158,7 @@ class QuizController extends AbstractController
                 $resultMCQService->saveResultMCQ($quiz, $goodResponse[$id]);
                 $answers[$id] = $quizService->getRightsAnswers($quiz);
                 $quizzes[$id] = $quiz;
+                $checks[$id] = $checkService->isCheckQuiz();
             }
 
             return $this->render('quiz/exam.html.twig', [
@@ -163,6 +167,7 @@ class QuizController extends AbstractController
                 'goodResponse' => $goodResponse,
                 'max' => $max,
                 'number' => $number,
+                'checks' => $checks,
             ]);
         }
 

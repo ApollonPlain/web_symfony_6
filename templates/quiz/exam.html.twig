@@ -9,7 +9,15 @@
     <form action="{{ path('app_quiz_exam', {max, number}) }}" method="post">
 
         {% for key, quiz in quizzes %}
-            {% include 'quiz/quiz_exam.html.twig' ignore missing with { quiz, max, 'answers': quizzesAnswers[key], 'exam': true, key, 'goodResponse': goodResponse[key] ?? null } %}
+            {% include 'quiz/quiz_exam.html.twig' ignore missing with {
+                quiz,
+                max,
+                'answers': quizzesAnswers[key],
+                'exam': true,
+                key,
+                'goodResponse': goodResponse[key] ?? null,
+                'check': checks[key] ?? false
+            } %}
         {% endfor %}
 
         <div class="row px-5">
