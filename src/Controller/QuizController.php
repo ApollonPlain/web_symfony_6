@@ -157,9 +157,7 @@ class QuizController extends AbstractController
                 $resultMCQService->saveResultMCQ($quiz, $goodResponse[$id]);
                 $answers[$id] = $quizService->getRightsAnswers($quiz);
                 $quizzes[$id] = $quiz;
-                $checks[$id] = $checkService->isCheckQuiz()
-
-                ;
+                $checks[$id] = $checkService->isCheckQuiz();
             }
 
             return $this->render('quiz/exam.html.twig', [
