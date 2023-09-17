@@ -114,7 +114,6 @@ class QuizController extends AbstractController
         shuffle($quizzes);
         $quiz = $quizzes[0];
 
-
         $quizAnswersRandomised = $quizService->getRandomizedAnswers($quiz);
 
         return $this->render('quiz/quiz.html.twig', [
@@ -136,13 +135,13 @@ class QuizController extends AbstractController
             foreach ($quizSent as $key => $value) {
                 $keyExploded = explode('-', $key);
 
-                if ($keyExploded[1] === 'id') {
+                if ('id' === $keyExploded[1]) {
                     $idQuiz = $value;
 
                     $quizzes[$idQuiz] = [];
                 } else {
                     if (!isset($idQuiz)) {
-                        dd("Error id not set");
+                        dd('Error id not set');
                     }
                     $quizzes[$idQuiz][$keyExploded[1]] = $value;
                 }
@@ -159,6 +158,7 @@ class QuizController extends AbstractController
                 $answers[$id] = $quizService->getRightsAnswers($quiz);
                 $quizzes[$id] = $quiz;
                 $checks[$id] = $checkService->isCheckQuiz()
+
                 ;
             }
 
