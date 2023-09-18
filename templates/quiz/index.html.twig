@@ -5,6 +5,8 @@
 {% block body %}
     <h1>Quiz index</h1>
 
+    <p>Time : {{ time }}</p>
+
     <a href="{{ path('app_quiz_mcq') }}">MCQ</a>
     <a href="{{ path('app_quiz_exam') }}">Exam</a>
     <a href="{{ path('app_quiz_new') }}">Create new</a>
