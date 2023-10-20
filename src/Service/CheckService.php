@@ -4,10 +4,10 @@ namespace App\Service;
 
 class CheckService
 {
-    private int $randomCheck = 100;
+    private int $randomCheck = 80;
 
     public function isCheckQuiz(): bool
     {
-        return rand(0, $this->randomCheck) === 0;
+        return 0 === rand(0, $this->randomCheck);
     }
 }
