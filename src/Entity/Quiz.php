@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Quiz
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column]
     private ?int $id = null;
 
@@ -66,7 +66,6 @@ class Quiz
 
     #[ORM\Column(nullable: true)]
     private ?bool $isH = null;
-
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $category;
