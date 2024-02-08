@@ -12,12 +12,15 @@ use App\Service\ResultMCQService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/quiz')]
 class QuizController extends AbstractController
 {
+    public function __construct(
+    ) {
+    }
+
     //    #[Cache(smaxage: 60)]
     #[Route('/', name: 'app_quiz_index', methods: ['GET'])]
     public function index(QuizRepository $quizRepository, ResultMCQRepository $resultMCQRepository): Response
@@ -101,6 +104,8 @@ class QuizController extends AbstractController
     #[Route('/mcq/{max}', name: 'app_quiz_mcq', methods: ['GET', 'POST'])]
     public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, CheckService $checkService, int $max = 0): Response
     {
+        $categoryId = $request->query->get('category');
+
         if ($request->isMethod(Request::METHOD_POST)) {
             $quizSent = $request->request->all();
 
@@ -115,10 +120,15 @@ class QuizController extends AbstractController
                 'goodResponse' => $goodResponse,
                 'max' => $max,
                 'check' => $checkService->isCheckQuiz(),
+                'category' => $categoryId,
             ]);
         }
 
-        $quizzes = $quizService->getQuizzes($max);
+        if ($categoryId) {
+            $quizzes = $quizRepository->findBy(['category' => $categoryId]);
+        } else {
+            $quizzes = $quizService->getQuizzes($max);
+        }
 
         shuffle($quizzes);
         $quiz = $quizzes[0];
@@ -129,6 +139,7 @@ class QuizController extends AbstractController
             'quiz' => $quiz,
             'answers' => $quizAnswersRandomised,
             'max' => $max,
+            'category' => $categoryId,
         ]);
     }
 

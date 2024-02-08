@@ -28,7 +28,7 @@
 
         {% endif %}
 
-        <form action="{{ path('app_quiz_mcq', {max}) }}" method="post" name="{{ quiz.id }}">
+        <form action="{{ path('app_quiz_mcq', {max: max, category: category}) }}" method="post" name="{{ quiz.id }}">
             <input name="id" value="{{ quiz.id }}" class="d-none">
             {% for answer in answers %}
                 <div class="col-md-12 py-2 px-5">
@@ -48,7 +48,7 @@
 
         </form>
         <div class="col-md-2 mt-2">
-            <a href="{{ path('app_quiz_mcq', {max}) }}" class="btn btn-secondary">Next MCQ</a>
+            <a href="{{ path('app_quiz_mcq', {max, category: category}) }}" class="btn btn-secondary">Next MCQ</a>
         </div>
 
 
