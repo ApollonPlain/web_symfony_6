@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Quiz;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,6 +19,11 @@ class QuizRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Quiz::class);
+    }
+
+    public function getNumberLength(): array
+    {
+        return $this->createQueryBuilder('q')->where('length(q.question) = 3 and q.category is null')->getQuery()->getResult();
     }
 
     public function save(Quiz $entity, bool $flush = false): void
@@ -40,28 +44,28 @@ class QuizRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Quiz[] Returns an array of Quiz objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('q')
-//            ->andWhere('q.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('q.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Quiz[] Returns an array of Quiz objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('q')
+    //            ->andWhere('q.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('q.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-//    public function findOneBySomeField($value): ?Quiz
-//    {
-//        return $this->createQueryBuilder('q')
-//            ->andWhere('q.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?Quiz
+    //    {
+    //        return $this->createQueryBuilder('q')
+    //            ->andWhere('q.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
