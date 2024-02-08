@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Quiz;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,7 +31,12 @@ class QuizType extends AbstractType
             ->add('isG')
             ->add('answerH')
             ->add('isH')
-            ->add('category')
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'placeholder' => 'Choose an option',
+                'required' => false,
+                'choice_label' => 'name',
+            ])
             ->add('sources')
         ;
     }

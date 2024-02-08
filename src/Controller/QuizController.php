@@ -173,6 +173,7 @@ class QuizController extends AbstractController
                 'quizzes' => $quizzes,
                 'quizzesAnswers' => $answers,
                 'goodResponse' => $goodResponse,
+                'nbGoodResponse' => count(array_filter($goodResponse)),
                 'max' => $max,
                 'number' => $number,
                 'checks' => $checks,

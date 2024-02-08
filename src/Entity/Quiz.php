@@ -67,14 +67,14 @@ class Quiz
     #[ORM\Column(nullable: true)]
     private ?bool $isH = null;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $category;
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $sources = null;
 
     #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: ResultMCQ::class, orphanRemoval: true)]
     private Collection $resultMCQs;
+
+    #[ORM\ManyToOne(inversedBy: 'quizzes')]
+    private ?Category $category = null;
 
     public function __construct()
     {
@@ -290,18 +290,6 @@ class Quiz
         return $this;
     }
 
-    public function getCategory(): ?int
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?int $category): static
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
     public function getSources(): ?string
     {
         return $this->sources;
@@ -340,6 +328,18 @@ class Quiz
                 $resultMCQ->setQuiz(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

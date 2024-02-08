@@ -6,6 +6,11 @@
 {% block body %}
     <h1>Exam question : {{ number }}</h1>
 
+    {% if goodResponse is defined %}
+        <h1>Results : {{ nbGoodResponse }} / {{ number }}</h1>
+    {% endif %}
+    <p></p>
+
     <form action="{{ path('app_quiz_exam', {max, number}) }}" method="post">
 
         {% for key, quiz in quizzes %}

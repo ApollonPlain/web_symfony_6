@@ -10,6 +10,7 @@
     <a href="{{ path('app_quiz_mcq') }}">MCQ</a>
     <a href="{{ path('app_quiz_exam') }}">Exam</a>
     <a href="{{ path('app_quiz_new') }}">Create new</a>
+    <a href="{{ path('app_category_new') }}">Add new Category</a>
 
 <table class="table">
     <thead>
@@ -78,7 +79,7 @@
                 <td>{{ quiz.isG ? 'Yes' : 'No' }}</td>
                 <td>{{ quiz.answerH }}</td>
                 <td>{{ quiz.isH ? 'Yes' : 'No' }}</td>
-                <td>{{ quiz.category }}</td>
+                <td>{{ quiz.category ? quiz.category.name }}</td>
                 <td>{{ quiz.sources }}</td>
                 <td>
                     <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}">show</a>
