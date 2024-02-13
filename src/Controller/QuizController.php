@@ -29,7 +29,7 @@ class QuizController extends AbstractController
         $resultsTrue = $resultMCQRepository->findBy(['isCorrect' => true]);
         $resultsFalse = $resultMCQRepository->findBy(['isCorrect' => false]);
 
-        $quizzes = $quizRepository->findAll();
+        $quizzes = $quizRepository->findBy([], ['id' => 'DESC']);
 
         $dateTime = new \DateTime();
 
