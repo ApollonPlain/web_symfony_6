@@ -38,6 +38,7 @@ class QuizType extends AbstractType
                 'choice_label' => 'name',
             ])
             ->add('sources')
+
         ;
     }
 
