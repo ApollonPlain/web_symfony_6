@@ -1,7 +1,7 @@
 up:
 	docker-compose up -d
 	symfony serve -d
-	open https://127.0.0.1:8000/quiz/
+	symfony open:local
 
 stop:
 	symfony server:stop
