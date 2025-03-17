@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Quiz
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[ORM\Column]
     private ?int $id = null;
 
@@ -342,5 +342,51 @@ class Quiz
         $this->category = $category;
 
         return $this;
+    }
+
+    public static function create(
+        string $question,
+        string $answerA,
+        bool $isA,
+        ?string $answerB = null,
+        ?bool $isB = null,
+        ?string $answerC = null,
+        ?bool $isC = null,
+        ?string $answerD = null,
+        ?bool $isD = null,
+        ?string $answerE = null,
+        ?bool $isE = null,
+        ?string $answerF = null,
+        ?bool $isF = null,
+        ?string $answerG = null,
+        ?bool $isG = null,
+        ?string $answerH = null,
+        ?bool $isH = null,
+        ?string $sources = null,
+        ?Category $category = null,
+    ): self {
+        $quiz = new self();
+
+        $quiz->setQuestion($question);
+        $quiz->setAnswerA($answerA);
+        $quiz->setIsA($isA);
+        $quiz->setAnswerB($answerB);
+        $quiz->setIsB($isB);
+        $quiz->setAnswerC($answerC);
+        $quiz->setIsC($isC);
+        $quiz->setAnswerD($answerD);
+        $quiz->setIsD($isD);
+        $quiz->setAnswerE($answerE);
+        $quiz->setIsE($isE);
+        $quiz->setAnswerF($answerF);
+        $quiz->setIsF($isF);
+        $quiz->setAnswerG($answerG);
+        $quiz->setIsG($isG);
+        $quiz->setAnswerH($answerH);
+        $quiz->setIsH($isH);
+        $quiz->setSources($sources);
+        $quiz->setCategory($category);
+
+        return $quiz;
     }
 }
