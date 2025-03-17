@@ -66,6 +66,8 @@ class QuizzParserCommand extends Command
         foreach ($data['questions'] as $item) {
             $answers = $item['answers'];
 
+            $output->writeln(sprintf('%s', $item['question']));
+
             $quiz = Quiz::create(
                 $item['question'],
                 $answers[0]['value'] ?? null, $answers[0]['correct'] ?? false,
@@ -85,6 +87,7 @@ class QuizzParserCommand extends Command
 
         $this->entityManager->flush();
 
+        $output->writeln('<info>Quizz add : '.count($data['questions']).'</info>');
         $output->writeln('<info>Quiz questions imported successfully!</info>');
 
         return Command::SUCCESS;
