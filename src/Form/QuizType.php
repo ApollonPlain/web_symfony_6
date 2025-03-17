@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Quiz;
+use App\Repository\CategoryRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -36,6 +37,10 @@ class QuizType extends AbstractType
                 'placeholder' => 'Choose an option',
                 'required' => false,
                 'choice_label' => 'name',
+                'query_builder' => function (CategoryRepository $categoryRepository) {
+                    return $categoryRepository->createQueryBuilder('c')
+                        ->orderBy('c.name', 'ASC');
+                },
             ])
             ->add('sources')
         ;

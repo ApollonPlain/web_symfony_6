@@ -4,7 +4,7 @@ namespace App\Service;
 
 class CheckService
 {
-    private int $randomCheck = 80;
+    private int $randomCheck = 40;
 
     public function isCheckQuiz(): bool
     {

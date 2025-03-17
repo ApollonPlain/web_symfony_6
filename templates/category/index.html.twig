@@ -12,6 +12,7 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Count</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,6 +21,7 @@
             <tr>
                 <td>{{ category.id }}</td>
                 <td>{{ category.name }}</td>
+                <td>{{ category.quizzes.count }}</td>
                 <td>
                     <a class="btn btn-secondary"  href="{{ path('app_category_show', {'id': category.id}) }}">show</a>
                     <a class="btn btn-primary"  href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
