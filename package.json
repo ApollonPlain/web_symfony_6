@@ -19,7 +19,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "@babel/preset-react": "^7.22.15",
+        "@babel/preset-react": "^7.26.3",
         "eslint": "^8.49.0",
         "prop-types": "^15.8.1",
         "react": "^18.2.0",
