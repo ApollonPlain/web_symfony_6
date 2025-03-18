@@ -2,49 +2,156 @@
 
 {% block title %}Exam{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .daily-progress-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .daily-progress-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .daily-progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .daily-progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-primary {
+            background: linear-gradient(45deg, #007bff, #00bcd4);
+        }
+        
+        .daily-progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .celebration {
+            animation: celebrationAnim 1s ease-in-out;
+        }
+        
+        @keyframes celebrationAnim {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars on load
+            const progressFills = document.querySelectorAll('.daily-progress-fill');
+            progressFills.forEach(fill => {
+                const percentage = fill.getAttribute('data-percentage');
+                setTimeout(() => {
+                    fill.style.width = percentage + '%';
+                }, 300);
+            });
+            
+            // Add celebration animation when progress is 100%
+            const completedProgress = document.querySelector('.daily-progress-fill[data-percentage="100"]');
+            if (completedProgress) {
+                setTimeout(() => {
+                    completedProgress.closest('.daily-progress-container').classList.add('celebration');
+                }, 500);
+            }
+        });
+    </script>
+{% endblock %}
 
 {% block body %}
-    <h1>Exam question : {{ number }}</h1>
-
-    {% if goodResponse is defined %}
-        <h1>Results : {{ nbGoodResponse }} / {{ number }}</h1>
-    {% endif %}
-    <p></p>
-
-    <form action="{{ path('app_quiz_exam', {max, number}) }}" method="post">
-
-        {% for key, quiz in quizzes %}
-            {% include 'quiz/quiz_exam.html.twig' ignore missing with {
-                quiz,
-                max,
-                'answers': quizzesAnswers[key],
-                'exam': true,
-                key,
-                'goodResponse': goodResponse[key] ?? null,
-                'check': checks[key] ?? false
-            } %}
-
-            <br />
-        {% endfor %}
-
-        <div class="row px-5">
-
-            <div class="col-md-3 mt-2">
-                <button type="submit" class="btn btn-success">Send</button>
+    <div class="container">
+        {% if dailyProgress is defined and dailyProgress is not null %}
+            <div class="daily-progress-container mt-4">
+                <div class="daily-progress-title">
+                    <h5 class="mb-0">Progression quotidienne</h5>
+                    <span>{{ dailyProgress.totalAnswered }} / {{ dailyProgress.dailyGoal }}</span>
+                </div>
+                <div class="daily-progress-bar">
+                    <div class="daily-progress-fill progress-primary" 
+                         data-percentage="{{ dailyProgress.progressPercentage }}" 
+                         style="width: 0%;">
+                    </div>
+                </div>
+                <div class="daily-progress-stats">
+                    <span>{{ dailyProgress.progressPercentage }}% complété</span>
+                    <span>Précision: {{ dailyProgress.accuracyPercentage }}%</span>
+                </div>
+                
+                {% if dailyProgress.progressPercentage >= 100 %}
+                    <div class="alert alert-success mt-2 mb-0">
+                        <i class="fas fa-trophy"></i> Bravo! Vous avez atteint votre objectif quotidien!
+                    </div>
+                {% endif %}
             </div>
+        {% endif %}
+        
+        <h1>Exam question : {{ number }}</h1>
 
-            <div class="col-6"></div>
+        {% if goodResponse is defined %}
+            <h1>Results : {{ nbGoodResponse }} / {{ number }}</h1>
+        {% endif %}
+        <p></p>
 
-            <div class="col-md-2 mt-2">
-                <a href="{{ path('app_quiz_exam', { max, number }) }}" class="btn btn-secondary">Next Exam</a>
+        <form action="{{ path('app_quiz_exam', {max, number}) }}" method="post">
+
+            {% for key, quiz in quizzes %}
+                {% include 'quiz/quiz_exam.html.twig' ignore missing with {
+                    quiz,
+                    max,
+                    'answers': quizzesAnswers[key],
+                    'exam': true,
+                    key,
+                    'goodResponse': goodResponse[key] ?? null,
+                    'check': checks[key] ?? false
+                } %}
+
+                <br />
+            {% endfor %}
+
+            <div class="row px-5">
+
+                <div class="col-md-3 mt-2">
+                    <button type="submit" class="btn btn-success">Send</button>
+                </div>
+
+                <div class="col-6"></div>
+
+                <div class="col-md-2 mt-2">
+                    <a href="{{ path('app_quiz_exam', { max, number }) }}" class="btn btn-secondary">Next Exam</a>
+                </div>
+
+                <div class="col-md-2 mt-3">
+                    <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary">back to list</a>
+                </div>
+
+
             </div>
-
-            <div class="col-md-2 mt-3">
-                <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary">back to list</a>
-            </div>
-
-
-        </div>
-    </form>
-
+        </form>
+    </div>
 {% endblock %}

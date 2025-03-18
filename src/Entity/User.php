@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -32,6 +34,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: DailyQuizProgress::class, orphanRemoval: true)]
+    private Collection $dailyQuizProgresses;
+
+    public function __construct()
+    {
+        $this->dailyQuizProgresses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -111,6 +121,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DailyQuizProgress>
+     */
+    public function getDailyQuizProgresses(): Collection
+    {
+        return $this->dailyQuizProgresses;
+    }
+
+    public function addDailyQuizProgress(DailyQuizProgress $dailyQuizProgress): static
+    {
+        if (!$this->dailyQuizProgresses->contains($dailyQuizProgress)) {
+            $this->dailyQuizProgresses->add($dailyQuizProgress);
+            $dailyQuizProgress->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDailyQuizProgress(DailyQuizProgress $dailyQuizProgress): static
+    {
+        if ($this->dailyQuizProgresses->removeElement($dailyQuizProgress)) {
+            // set the owning side to null (unless already changed)
+            if ($dailyQuizProgress->getUser() === $this) {
+                $dailyQuizProgress->setUser(null);
+            }
+        }
 
         return $this;
     }

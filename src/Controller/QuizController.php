@@ -105,6 +105,7 @@ class QuizController extends AbstractController
     public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, CheckService $checkService, int $max = 0): Response
     {
         $categoryId = $request->query->get('category');
+        $dailyProgress = $resultMCQService->getTodayProgressForCurrentUser();
 
         if ($request->isMethod(Request::METHOD_POST)) {
             $quizSent = $request->request->all();
@@ -114,6 +115,9 @@ class QuizController extends AbstractController
             $goodResponse = $quizService->isMQCGood($quiz, $quizSent);
             $resultMCQService->saveResultMCQ($quiz, $goodResponse);
 
+            // Refresh daily progress after saving result
+            $dailyProgress = $resultMCQService->getTodayProgressForCurrentUser();
+
             return $this->render('quiz/quiz.html.twig', [
                 'quiz' => $quiz,
                 'answers' => $quizService->getRightsAnswers($quiz),
@@ -121,6 +125,7 @@ class QuizController extends AbstractController
                 'max' => $max,
                 'check' => $checkService->isCheckQuiz(),
                 'category' => $categoryId,
+                'dailyProgress' => $dailyProgress,
             ]);
         }
 
@@ -140,12 +145,15 @@ class QuizController extends AbstractController
             'answers' => $quizAnswersRandomised,
             'max' => $max,
             'category' => $categoryId,
+            'dailyProgress' => $dailyProgress,
         ]);
     }
 
     #[Route('/exam/{max}/{number}', name: 'app_quiz_exam', methods: ['GET', 'POST'])]
     public function exam(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, CheckService $checkService, int $max = 0, int $number = 10): Response
     {
+        $dailyProgress = $resultMCQService->getTodayProgressForCurrentUser();
+
         if ($request->isMethod(Request::METHOD_POST)) {
             $quizSent = $request->request->all();
 
@@ -180,6 +188,9 @@ class QuizController extends AbstractController
                 $checks[$id] = $checkService->isCheckQuiz();
             }
 
+            // Refresh daily progress after saving results
+            $dailyProgress = $resultMCQService->getTodayProgressForCurrentUser();
+
             return $this->render('quiz/exam.html.twig', [
                 'quizzes' => $quizzes,
                 'quizzesAnswers' => $answers,
@@ -188,6 +199,7 @@ class QuizController extends AbstractController
                 'max' => $max,
                 'number' => $number,
                 'checks' => $checks,
+                'dailyProgress' => $dailyProgress,
             ]);
         }
 
@@ -204,6 +216,7 @@ class QuizController extends AbstractController
             'quizzesAnswers' => $quizzesAnswers,
             'number' => $number,
             'max' => $max,
+            'dailyProgress' => $dailyProgress,
         ]);
     }
 }
