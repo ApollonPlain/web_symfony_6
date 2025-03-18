@@ -1,97 +1,396 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Quiz index{% endblock %}
+{% block title %}Quiz Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .dashboard-container {
+            padding: 2rem 0;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(120deg, #007bff, #00bcd4);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stats-card h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .action-buttons {
+            margin: 2rem 0;
+        }
+        
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn-primary {
+            background: linear-gradient(45deg, #007bff, #00bcd4);
+            border: none;
+            color: white;
+        }
+        
+        .action-btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            border: none;
+            color: white;
+        }
+        
+        .action-btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            color: white;
+        }
+        
+        .category-section, .quiz-section {
+            margin-top: 3rem;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .section-title:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background: #007bff;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-count {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .category-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .quiz-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .quiz-table th {
+            background: #f8f9fa;
+            border-top: none;
+        }
+        
+        .quiz-table .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .quiz-table .quiz-question {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .quiz-filter {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .quiz-search {
+            max-width: 300px;
+            margin-right: 1rem;
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+        }
+        
+        .pagination {
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .action-btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Quiz index</h1>
+    <div class="container dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0">Quiz Dashboard</h1>
+                    <p class="mb-0 mt-2">{{ time }}</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    {% if app.user %}
+                        <span class="text-white">Connecté en tant que: {{ app.user.email }}</span>
+                        <a href="{{ path('app_logout') }}" class="btn btn-sm btn-light ms-2">Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-sm btn-light">Se connecter</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="stats-card">
+                    <h3>Total Quiz</h3>
+                    <div class="stats-value">{{ quizzes|length }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stats-card">
+                    <h3>Total Réponses</h3>
+                    <div class="stats-value">{{ count_results }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stats-card">
+                    <h3>Réponses Correctes</h3>
+                    <div class="stats-value">{{ count_results_true }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stats-card">
+                    <h3>Réponses Incorrectes</h3>
+                    <div class="stats-value">{{ count_results_false }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{{ path('app_quiz_mcq') }}" class="btn action-btn action-btn-primary">
+                <i class="fas fa-question-circle me-2"></i>Démarrer un QCM
+            </a>
+            <a href="{{ path('app_quiz_exam') }}" class="btn action-btn action-btn-success">
+                <i class="fas fa-file-alt me-2"></i>Passer un Examen
+            </a>
+            <a href="{{ path('app_quiz_new') }}" class="btn action-btn action-btn-secondary">
+                <i class="fas fa-plus me-2"></i>Créer un Quiz
+            </a>
+        </div>
+        
+        <!-- Categories Section -->
+        <div class="category-section">
+            <h2 class="section-title">Catégories</h2>
+            
+            <div class="row" id="categories-container">
+                <!-- Categories will be loaded dynamically -->
+            </div>
+        </div>
+        
+        <!-- Quiz Section -->
+        <div class="quiz-section">
+            <h2 class="section-title">Quiz</h2>
+            
+            <div class="quiz-filter">
+                <div class="input-group quiz-search">
+                    <input type="text" id="quiz-search" class="form-control" placeholder="Rechercher un quiz...">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive quiz-table">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Question</th>
+                            <th>Catégorie</th>
+                            <th>Réponses</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for quiz in quizzes %}
+                            <tr>
+                                <td>{{ quiz.id }}</td>
+                                <td class="quiz-question">{{ quiz.question }}</td>
+                                <td>{{ quiz.category ? quiz.category.name : 'Non classé' }}</td>
+                                <td>
+                                    <span class="badge bg-success">{{ (quiz.isA ? 1 : 0) + (quiz.isB ? 1 : 0) + (quiz.isC ? 1 : 0) + (quiz.isD ? 1 : 0) + (quiz.isE ? 1 : 0) + (quiz.isF ? 1 : 0) + (quiz.isG ? 1 : 0) + (quiz.isH ? 1 : 0) }} correctes</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-3">Aucun quiz trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-    <p>Time : {{ time }}</p>
-
-    <a href="{{ path('app_quiz_mcq') }}">MCQ</a>
-    <a href="{{ path('app_quiz_exam') }}">Exam</a>
-    <a href="{{ path('app_quiz_new') }}">Create new</a>
-    <a href="{{ path('app_category_index') }}">Category Show</a>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Count Quizzes</th>
-            <th>Count QCM</th>
-            <th>Count Rights</th>
-            <th>Count Wrongs</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>{{ quizzes|length }}</th>
-            <th>{{ count_results }}</th>
-            <th>{{ count_results_true }}</th>
-            <th>{{ count_results_false }}</th>
-        </tr>
-    </tbody>
-</table >
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Question</th>
-            <th>AnswerA</th>
-            <th>IsA</th>
-            <th>AnswerB</th>
-            <th>IsB</th>
-            <th>AnswerC</th>
-            <th>IsC</th>
-            <th>AnswerD</th>
-            <th>IsD</th>
-            <th>AnswerE</th>
-            <th>IsE</th>
-            <th>AnswerF</th>
-            <th>IsF</th>
-            <th>AnswerG</th>
-            <th>IsG</th>
-            <th>AnswerH</th>
-            <th>IsH</th>
-            <th>Category</th>
-            <th>Sources</th>
-            <th>actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for quiz in quizzes %}
-        <tr>
-            <td>{{ quiz.id }}</td>
-            <td>{{ quiz.question }}</td>
-            <td>{{ quiz.answerA }}</td>
-            <td>{{ quiz.isA ? 'Yes' : 'No' }}</td>
-            <td>{{ quiz.answerB }}</td>
-            <td>{{ quiz.isB ? 'Yes' : 'No' }}</td>
-            <td>{{ quiz.answerC }}</td>
-            <td>{{ quiz.isC ? 'Yes' : 'No' }}</td>
-            <td>{{ quiz.answerD }}</td>
-            <td>{{ quiz.isD ? 'Yes' : 'No' }}</td>
-            <td>{{ quiz.answerE }}</td>
-            <td>{{ quiz.isE ? 'Yes' : 'No' }}</td>
-            <td>{{ quiz.answerF }}</td>
-            <td>{{ quiz.isF ? 'Yes' : 'No' }}</td>
-            <td>{{ quiz.answerG }}</td>
-            <td>{{ quiz.isG ? 'Yes' : 'No' }}</td>
-            <td>{{ quiz.answerH }}</td>
-            <td>{{ quiz.isH ? 'Yes' : 'No' }}</td>
-            <td>{{ quiz.category ? quiz.category.name }}</td>
-            <td>{{ quiz.sources }}</td>
-            <td>
-                <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}">show</a>
-                <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}">edit</a>
-            </td>
-        </tr>
-    {% else %}
-        <tr>
-            <td colspan="18">no records found</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load categories via AJAX
+            fetch('{{ path('app_category_index') }}')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const categories = [];
+                    
+                    // Extract categories from the response
+                    doc.querySelectorAll('.category-table tbody tr').forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length >= 3) {
+                            categories.push({
+                                id: cells[0].textContent.trim(),
+                                name: cells[1].textContent.trim(),
+                                count: cells[2].textContent.trim()
+                            });
+                        }
+                    });
+                    
+                    // Create category cards
+                    const categoriesContainer = document.getElementById('categories-container');
+                    
+                    if (categories.length === 0) {
+                        categoriesContainer.innerHTML = `
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    Aucune catégorie trouvée. <a href="{{ path('app_category_new') }}">Créer une nouvelle catégorie</a>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        categories.forEach(category => {
+                            const categoryCard = document.createElement('div');
+                            categoryCard.className = 'col-md-4 col-lg-3 mb-4';
+                            categoryCard.innerHTML = `
+                                <div class="category-card">
+                                    <div class="category-name">${category.name}</div>
+                                    <div class="category-count">${category.count} quiz</div>
+                                    <div class="category-actions">
+                                        <a href="{{ path('app_quiz_mcq') }}?category=${category.id}" class="btn btn-sm btn-primary">Tester</a>
+                                        <a href="/category/${category.id}" class="btn btn-sm btn-outline-secondary">Voir</a>
+                                    </div>
+                                </div>
+                            `;
+                            categoriesContainer.appendChild(categoryCard);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading categories:', error);
+                    const categoriesContainer = document.getElementById('categories-container');
+                    categoriesContainer.innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                Impossible de charger les catégories. <a href="{{ path('app_category_index') }}">Voir toutes les catégories</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            
+            // Quiz search functionality
+            const quizSearch = document.getElementById('quiz-search');
+            quizSearch.addEventListener('keyup', function() {
+                const searchValue = this.value.toLowerCase();
+                document.querySelectorAll('.quiz-table tbody tr').forEach(row => {
+                    const question = row.querySelector('.quiz-question').textContent.toLowerCase();
+                    const category = row.querySelectorAll('td')[2].textContent.toLowerCase();
+                    
+                    if (question.includes(searchValue) || category.includes(searchValue)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

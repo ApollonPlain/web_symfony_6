@@ -1,26 +1,151 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Category{% endblock %}
+{% block title %}Catégorie: {{ category.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .category-container {
+            padding: 2rem 0;
+        }
+        
+        .category-header {
+            background: linear-gradient(120deg, #007bff, #00bcd4);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .delete-form {
+            display: inline-block;
+        }
+        
+        .quiz-list {
+            margin-top: 2rem;
+        }
+        
+        .quiz-item {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .quiz-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .quiz-question {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Category</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ category.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ category.name }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_category_index') }}">back to list</a>
-
-    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
-
-    {{ include('category/_delete_form.html.twig') }}
+    <div class="container category-container">
+        <div class="category-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0">{{ category.name }}</h1>
+                    <p class="mb-0 mt-2">{{ category.quizzes|length }} quiz dans cette catégorie</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="{{ path('app_category_index') }}" class="btn btn-light">
+                        <i class="fas fa-arrow-left me-2"></i>Retour aux catégories
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="category-card">
+                    <h3 class="mb-4">Informations</h3>
+                    
+                    <div class="mb-3">
+                        <strong>ID:</strong> {{ category.id }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Nom:</strong> {{ category.name }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Nombre de quiz:</strong> {{ category.quizzes|length }}
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Modifier
+                        </a>
+                        
+                        <a href="{{ path('app_quiz_mcq', {'category': category.id}) }}" class="btn btn-success">
+                            <i class="fas fa-play me-2"></i>Tester
+                        </a>
+                        
+                        <div class="delete-form">
+                            {{ include('category/_delete_form.html.twig') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <h3 class="mb-4">Quiz dans cette catégorie</h3>
+                
+                <div class="quiz-list">
+                    {% if category.quizzes is not empty %}
+                        {% for quiz in category.quizzes %}
+                            <div class="quiz-item">
+                                <div class="quiz-question">{{ quiz.question }}</div>
+                                
+                                <div class="badge bg-success">
+                                    {{ (quiz.isA ? 1 : 0) + (quiz.isB ? 1 : 0) + (quiz.isC ? 1 : 0) + (quiz.isD ? 1 : 0) + (quiz.isE ? 1 : 0) + (quiz.isF ? 1 : 0) + (quiz.isG ? 1 : 0) + (quiz.isH ? 1 : 0) }} réponses correctes
+                                </div>
+                                
+                                <div class="quiz-actions">
+                                    <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                    <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            Aucun quiz dans cette catégorie.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
