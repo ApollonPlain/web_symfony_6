@@ -14,7 +14,7 @@ This is a web application built with Symfony 6, a powerful PHP framework for bui
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone git@github.com:ApollonPlain/web_symfony_6.git
 cd web_symfony_6
 ```
 
