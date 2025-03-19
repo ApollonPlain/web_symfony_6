@@ -273,56 +273,56 @@
                 
                 <div class="answers-container mt-4">
                     {% set allAnswers = [] %}
-                    {% if quiz.answerA %}
+                    {% if quiz.answerA is not null %}
                         {% set isA = quiz.isA %}
                         {% set wasSelectedA = app.request.request.has('A') %}
                         {% set answerA = {'answer': quiz.answerA, 'id': 'A', 'isCorrect': isA, 'wasSelected': wasSelectedA} %}
                         {% set allAnswers = allAnswers|merge([answerA]) %}
                     {% endif %}
                     
-                    {% if quiz.answerB %}
+                    {% if quiz.answerB is not null %}
                         {% set isB = quiz.isB %}
                         {% set wasSelectedB = app.request.request.has('B') %}
                         {% set answerB = {'answer': quiz.answerB, 'id': 'B', 'isCorrect': isB, 'wasSelected': wasSelectedB} %}
                         {% set allAnswers = allAnswers|merge([answerB]) %}
                     {% endif %}
                     
-                    {% if quiz.answerC %}
+                    {% if quiz.answerC is not null %}
                         {% set isC = quiz.isC %}
                         {% set wasSelectedC = app.request.request.has('C') %}
                         {% set answerC = {'answer': quiz.answerC, 'id': 'C', 'isCorrect': isC, 'wasSelected': wasSelectedC} %}
                         {% set allAnswers = allAnswers|merge([answerC]) %}
                     {% endif %}
                     
-                    {% if quiz.answerD %}
+                    {% if quiz.answerD is not null %}
                         {% set isD = quiz.isD %}
                         {% set wasSelectedD = app.request.request.has('D') %}
                         {% set answerD = {'answer': quiz.answerD, 'id': 'D', 'isCorrect': isD, 'wasSelected': wasSelectedD} %}
                         {% set allAnswers = allAnswers|merge([answerD]) %}
                     {% endif %}
                     
-                    {% if quiz.answerE %}
+                    {% if quiz.answerE is not null %}
                         {% set isE = quiz.isE %}
                         {% set wasSelectedE = app.request.request.has('E') %}
                         {% set answerE = {'answer': quiz.answerE, 'id': 'E', 'isCorrect': isE, 'wasSelected': wasSelectedE} %}
                         {% set allAnswers = allAnswers|merge([answerE]) %}
                     {% endif %}
                     
-                    {% if quiz.answerF %}
+                    {% if quiz.answerF is not null %}
                         {% set isF = quiz.isF %}
                         {% set wasSelectedF = app.request.request.has('F') %}
                         {% set answerF = {'answer': quiz.answerF, 'id': 'F', 'isCorrect': isF, 'wasSelected': wasSelectedF} %}
                         {% set allAnswers = allAnswers|merge([answerF]) %}
                     {% endif %}
                     
-                    {% if quiz.answerG %}
+                    {% if quiz.answerG is not null %}
                         {% set isG = quiz.isG %}
                         {% set wasSelectedG = app.request.request.has('G') %}
                         {% set answerG = {'answer': quiz.answerG, 'id': 'G', 'isCorrect': isG, 'wasSelected': wasSelectedG} %}
                         {% set allAnswers = allAnswers|merge([answerG]) %}
                     {% endif %}
                     
-                    {% if quiz.answerH %}
+                    {% if quiz.answerH is not null %}
                         {% set isH = quiz.isH %}
                         {% set wasSelectedH = app.request.request.has('H') %}
                         {% set answerH = {'answer': quiz.answerH, 'id': 'H', 'isCorrect': isH, 'wasSelected': wasSelectedH} %}
