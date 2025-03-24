@@ -301,7 +301,13 @@
                                 <td class="quiz-question">{{ quiz.question }}</td>
                                 <td>{{ quiz.category ? quiz.category.name : 'Non classé' }}</td>
                                 <td>
-                                    <span class="badge bg-success">{{ (quiz.isA ? 1 : 0) + (quiz.isB ? 1 : 0) + (quiz.isC ? 1 : 0) + (quiz.isD ? 1 : 0) + (quiz.isE ? 1 : 0) + (quiz.isF ? 1 : 0) + (quiz.isG ? 1 : 0) + (quiz.isH ? 1 : 0) }} correctes</span>
+                                    {% set correctAnswers = 0 %}
+                                    {% for result in quiz.resultMCQs %}
+                                        {% if result.isCorrect %}
+                                            {% set correctAnswers = correctAnswers + 1 %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="badge bg-success">{{ correctAnswers }} bonnes réponses</span>
                                 </td>
                                 <td>
                                     <div class="btn-group">
