@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Entity\Quiz;
 use App\Repository\QuizRepository;
-use Phalcon\Di\Service;
 
 class QuizService
 {
@@ -16,55 +15,55 @@ class QuizService
     {
         $quizAnswers[] = [
             'answer' => $quiz->getAnswerA(),
-            'id' => 'A'
+            'id' => 'A',
         ];
 
-        if ($quiz->getAnswerB() !== null) {
+        if (null !== $quiz->getAnswerB()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerB(),
-                'id' => 'B'
+                'id' => 'B',
             ];
         }
 
-        if ($quiz->getAnswerC() !== null) {
+        if (null !== $quiz->getAnswerC()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerC(),
-                'id' => 'C'
+                'id' => 'C',
             ];
         }
 
-        if ($quiz->getAnswerD() !== null) {
+        if (null !== $quiz->getAnswerD()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerD(),
-                'id' => 'D'
+                'id' => 'D',
             ];
         }
 
-        if ($quiz->getAnswerE() !== null) {
+        if (null !== $quiz->getAnswerE()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerE(),
-                'id' => 'E'
+                'id' => 'E',
             ];
         }
 
-        if ($quiz->getAnswerF() !== null) {
+        if (null !== $quiz->getAnswerF()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerF(),
-                'id' => 'F'
+                'id' => 'F',
             ];
         }
 
-        if ($quiz->getAnswerG() !== null) {
+        if (null !== $quiz->getAnswerG()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerG(),
-                'id' => 'G'
+                'id' => 'G',
             ];
         }
 
-        if ($quiz->getAnswerH() !== null) {
+        if (null !== $quiz->getAnswerH()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerH(),
-                'id' => 'H'
+                'id' => 'H',
             ];
         }
 
@@ -72,7 +71,6 @@ class QuizService
 
         return $quizAnswers;
     }
-
 
     public function isMQCGood(Quiz $quiz, array $quizSent): bool
     {
@@ -116,56 +114,56 @@ class QuizService
         if ($quiz->isIsA()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerA(),
-                'id' => 'A'
+                'id' => 'A',
             ];
         }
 
         if ($quiz->isIsB()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerB(),
-                'id' => 'B'
+                'id' => 'B',
             ];
         }
 
         if ($quiz->isIsC()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerC(),
-                'id' => 'C'
+                'id' => 'C',
             ];
         }
 
         if ($quiz->isIsD()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerD(),
-                'id' => 'D'
+                'id' => 'D',
             ];
         }
 
         if ($quiz->isIsE()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerE(),
-                'id' => 'E'
+                'id' => 'E',
             ];
         }
 
         if ($quiz->isIsF()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerF(),
-                'id' => 'F'
+                'id' => 'F',
             ];
         }
 
         if ($quiz->isIsG()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerG(),
-                'id' => 'G'
+                'id' => 'G',
             ];
         }
 
         if ($quiz->isIsH()) {
             $quizAnswers[] = [
                 'answer' => $quiz->getAnswerH(),
-                'id' => 'H'
+                'id' => 'H',
             ];
         }
 
@@ -174,28 +172,16 @@ class QuizService
 
     public function getQuizzes(int $max = 0)
     {
-        $quizzes = $this->quizRepository->findAll();
+        $quizzes = $this->quizRepository->getQuizzesWithMaxCorrectAnswers($max);
 
-        if ($max > 0) {
-            foreach ($quizzes as $key => $quiz) {
-                $countSuccess = 0;
-                foreach ($quiz->getResultMCQs() as $resultMCQ) {
-                    if ($resultMCQ->isIsCorrect()) {
-                        $countSuccess++;
-                    }
-                }
-
-                if ($countSuccess >= $max) {
-                    unset($quizzes[$key]);
-                }
-            }
+        if (empty($quizzes)) {
+            throw new \RuntimeException('No quiz found');
         }
 
-        if (count($quizzes) === 0) {
-            dd("No quiz found");
-        }
-
-        return $quizzes;
+        // Convert the results to Quiz objects only
+        return array_map(function ($result) {
+            return $result[0];
+        }, $quizzes);
     }
 
     public function getQuizExam(int $size = 10, int $max = 0): array
@@ -203,7 +189,7 @@ class QuizService
         $quizzes = $this->getQuizzes($max);
 
         shuffle($quizzes);
+
         return array_slice($quizzes, 0, $size);
     }
-
 }

@@ -44,6 +44,21 @@ class QuizRepository extends ServiceEntityRepository
         }
     }
 
+    public function getQuizzesWithMaxCorrectAnswers(?int $max = null): array
+    {
+        $qb = $this->createQueryBuilder('q')
+            ->leftJoin('q.resultMCQs', 'r')
+            ->addSelect('SUM(CASE WHEN r.isCorrect = true THEN 1 ELSE 0 END) as correctAnswers')
+            ->groupBy('q.id');
+
+        if (null !== $max && $max > 0) {
+            $qb->having('SUM(CASE WHEN r.isCorrect = true THEN 1 ELSE 0 END) < :max')
+               ->setParameter('max', $max);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Quiz[] Returns an array of Quiz objects
     //     */

@@ -242,7 +242,18 @@
             <div class="quiz-progress-bar"></div>
         </div>
         
-        <h1 class="text-center mb-4">Question {{ quiz.id }} of {{ max }}</h1>
+        <h1 class="text-center mb-4">
+            Question {{ quiz.id }} of {{ max }}
+            {% set correctAnswers = 0 %}
+            {% for result in quiz.resultMCQs %}
+                {% if result.isCorrect %}
+                    {% set correctAnswers = correctAnswers + 1 %}
+                {% endif %}
+            {% endfor %}
+            <div class="mt-2">
+                <span class="badge bg-success">Answered correctly {{ correctAnswers }} times</span>
+            </div>
+        </h1>
         
         {% if quiz.category %}
             <div class="text-center mb-4">
