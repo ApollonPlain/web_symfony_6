@@ -244,6 +244,16 @@
         
         <h1 class="text-center mb-4">Question {{ quiz.id }} of {{ max }}</h1>
         
+        {% if quiz.category %}
+            <div class="text-center mb-4">
+                <span class="badge bg-info">{{ quiz.category.name }}</span>
+            </div>
+        {% else %}
+            <div class="text-center mb-4">
+                <span class="badge bg-info">Sans catégorie</span>
+            </div>
+        {% endif %}
+        
         <div class="question-card">
             <div class="question-text mb-4">
                 <h4 class="mb-3">Question:</h4>
