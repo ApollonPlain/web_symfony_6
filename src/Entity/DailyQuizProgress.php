@@ -28,7 +28,7 @@ class DailyQuizProgress
     private ?User $user = null;
 
     #[ORM\Column]
-    private ?int $dailyGoal = 10;
+    private ?int $dailyGoal = 20;
 
     public function __construct()
     {
