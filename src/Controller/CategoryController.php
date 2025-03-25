@@ -42,6 +42,47 @@ class CategoryController extends AbstractController
         ]);
     }
 
+    #[Route('/statistics', name: 'app_category_statistics')]
+    public function statistics(CategoryRepository $categoryRepository): Response
+    {
+        $categories = $categoryRepository->findAll();
+
+        // Basic statistics
+        $totalCategories = count($categories);
+        $activeCategories = count(array_filter($categories, fn ($cat) => $cat->isActive()));
+
+        // Get historical data (last 6 months)
+        $monthlyStats = [];
+        for ($i = 5; $i >= 0; --$i) {
+            $date = new \DateTime("first day of -$i month");
+            $monthlyStats[] = [
+                'month' => $date->format('M Y'),
+                'count' => $categoryRepository->countCategoriesCreatedInMonth($date),
+            ];
+        }
+
+        // Get detailed statistics for each category
+        $categoryStats = [];
+        foreach ($categories as $category) {
+            $categoryStats[$category->getId()] = [
+                'name' => $category->getName(),
+                'stats' => $categoryRepository->getCategoryStatistics($category),
+                'daily_activity' => $categoryRepository->getDailyActivityStats($category),
+            ];
+        }
+
+        // Get top performing categories
+        $topCategories = $categoryRepository->getTopPerformingCategories(5);
+
+        return $this->render('category/statistics.html.twig', [
+            'total_categories' => $totalCategories,
+            'active_categories' => $activeCategories,
+            'monthly_stats' => $monthlyStats,
+            'category_stats' => $categoryStats,
+            'top_categories' => $topCategories,
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_category_show', methods: ['GET'])]
     public function show(Category $category): Response
     {

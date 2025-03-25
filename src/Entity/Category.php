@@ -18,12 +18,19 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $status = 'active';
+
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Quiz::class)]
     private Collection $quizzes;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()
     {
         $this->quizzes = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -39,6 +46,18 @@ class Category
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
@@ -69,6 +88,23 @@ class Category
                 $quiz->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return 'active' === $this->status;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

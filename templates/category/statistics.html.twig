@@ -1,0 +1,234 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category Statistics{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .progress {
+            height: 10px;
+            margin-top: 5px;
+        }
+        .category-detail {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Category Statistics</h1>
+
+        {# Overview Cards #}
+        <div class="stats-grid">
+            <div class="stats-card">
+                <h3>Total Categories</h3>
+                <p class="display-4">{{ total_categories }}</p>
+            </div>
+            <div class="stats-card">
+                <h3>Active Categories</h3>
+                <p class="display-4">{{ active_categories }}</p>
+            </div>
+            <div class="stats-card">
+                <h3>Completion Rate</h3>
+                <p class="display-4">
+                    {{ total_categories ? (active_categories / total_categories * 100)|round }}%
+                </p>
+            </div>
+        </div>
+
+        {# Top Performing Categories #}
+        <div class="chart-container mb-4">
+            <h3>Top Performing Categories</h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Success Rate</th>
+                            <th>Total Attempts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in top_categories %}
+                            <tr>
+                                <td>{{ category.name }}</td>
+                                <td>
+                                    {{ category.success_rate|round(2) }}%
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" 
+                                             role="progressbar" 
+                                             style="width: {{ category.success_rate }}%" 
+                                             aria-valuenow="{{ category.success_rate }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ category.attempt_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {# Monthly Creation Trend #}
+        <div class="chart-container mb-4">
+            <h3>Category Creation Trend</h3>
+            <canvas id="monthlyStatsChart"></canvas>
+        </div>
+
+        {# Detailed Category Statistics #}
+        <div class="category-detail">
+            <h3 class="mb-4">Detailed Category Statistics</h3>
+            {% for id, data in category_stats %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>{{ data.name }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stat-value">{{ data.stats.total_quizzes }}</div>
+                                <div class="stat-label">Total Quizzes</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-value">{{ data.stats.total_attempts }}</div>
+                                <div class="stat-label">Total Attempts</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-value">{{ data.stats.success_rate }}%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                        </div>
+
+                        {% if data.daily_activity|length > 0 %}
+                            <div class="mt-4">
+                                <h5>Daily Activity (Last 7 Days)</h5>
+                                <canvas id="dailyChart{{ id }}"></canvas>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Monthly Stats Chart
+            const monthlyCtx = document.getElementById('monthlyStatsChart').getContext('2d');
+            new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: {{ monthly_stats|map(s => s.month)|json_encode|raw }},
+                    datasets: [{
+                        label: 'Categories Created',
+                        data: {{ monthly_stats|map(s => s.count)|json_encode|raw }},
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Category Creation Trend (Last 6 Months)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Daily Activity Charts for each category
+            {% for id, data in category_stats %}
+                {% if data.daily_activity|length > 0 %}
+                    const dailyCtx{{ id }} = document.getElementById('dailyChart{{ id }}').getContext('2d');
+                    new Chart(dailyCtx{{ id }}, {
+                        type: 'bar',
+                        data: {
+                            labels: {{ data.daily_activity|map(d => d.date)|json_encode|raw }},
+                            datasets: [{
+                                label: 'Attempts',
+                                data: {{ data.daily_activity|map(d => d.attempts)|json_encode|raw }},
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgb(54, 162, 235)',
+                                borderWidth: 1
+                            }, {
+                                label: 'Success Rate (%)',
+                                data: {{ data.daily_activity|map(d => d.daily_success_rate)|json_encode|raw }},
+                                type: 'line',
+                                borderColor: 'rgb(75, 192, 192)',
+                                yAxisID: 'percentage'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    position: 'left'
+                                },
+                                percentage: {
+                                    beginAtZero: true,
+                                    position: 'right',
+                                    max: 100,
+                                    grid: {
+                                        drawOnChartArea: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                {% endif %}
+            {% endfor %}
+        });
+    </script>
+{% endblock %} 
