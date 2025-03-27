@@ -44,7 +44,7 @@ class QuizRepository extends ServiceEntityRepository
         }
     }
 
-    public function getQuizzesWithMaxCorrectAnswers(?int $max = null): array
+    public function getQuizzesWithMaxCorrectAnswers(?int $max = null, ?int $categoryId = null): array
     {
         $qb = $this->createQueryBuilder('q')
             ->leftJoin('q.resultMCQs', 'r')
@@ -54,6 +54,11 @@ class QuizRepository extends ServiceEntityRepository
         if (null !== $max && $max > 0) {
             $qb->having('SUM(CASE WHEN r.isCorrect = true THEN 1 ELSE 0 END) < :max')
                ->setParameter('max', $max);
+        }
+
+        if (null !== $categoryId) {
+            $qb->andWhere('q.category = :categoryId')
+               ->setParameter('categoryId', $categoryId);
         }
 
         return $qb->getQuery()->getResult();

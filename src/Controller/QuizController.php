@@ -129,11 +129,7 @@ class QuizController extends AbstractController
             ]);
         }
 
-        if ($categoryId) {
-            $quizzes = $quizRepository->findBy(['category' => $categoryId]);
-        } else {
-            $quizzes = $quizService->getQuizzes($max);
-        }
+        $quizzes = $quizService->getQuizzes($max, $categoryId);
 
         shuffle($quizzes);
         $quiz = $quizzes[0];

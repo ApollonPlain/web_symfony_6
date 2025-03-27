@@ -170,9 +170,9 @@ class QuizService
         return $quizAnswers ?? [];
     }
 
-    public function getQuizzes(int $max = 0)
+    public function getQuizzes(int $max = 0, ?int $categoryId = null): array
     {
-        $quizzes = $this->quizRepository->getQuizzesWithMaxCorrectAnswers($max);
+        $quizzes = $this->quizRepository->getQuizzesWithMaxCorrectAnswers($max, $categoryId);
 
         if (empty($quizzes)) {
             throw new \RuntimeException('No quiz found');
