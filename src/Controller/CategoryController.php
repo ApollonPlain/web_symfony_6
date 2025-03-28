@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
+use App\Repository\QuizRepository;
+use App\Repository\ResultMCQRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +45,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/statistics', name: 'app_category_statistics')]
-    public function statistics(CategoryRepository $categoryRepository): Response
+    public function statistics(CategoryRepository $categoryRepository, ResultMCQRepository $resultMCQRepository, QuizRepository $quizRepository): Response
     {
         $categories = $categoryRepository->findAll();
 
@@ -72,7 +74,15 @@ class CategoryController extends AbstractController
         }
 
         // Get top performing categories
-        $topCategories = $categoryRepository->getTopPerformingCategories(5);
+        $topCategories = $categoryRepository->getTopPerformingCategories(50);
+
+        $completion1 = $resultMCQRepository->countHowGoodAnswersByQuiz();
+        $completion2 = $resultMCQRepository->countHowGoodAnswersByQuiz(2);
+        $completion3 = $resultMCQRepository->countHowGoodAnswersByQuiz(3);
+
+        $completion_rate_1 = round($completion1 / $quizRepository->count([]) * 100, 1);
+        $completion_rate_2 = round($completion2 / $quizRepository->count([]) * 100, 1);
+        $completion_rate_3 = round($completion3 / $quizRepository->count([]) * 100, 1);
 
         return $this->render('category/statistics.html.twig', [
             'total_categories' => $totalCategories,
@@ -80,6 +90,9 @@ class CategoryController extends AbstractController
             'monthly_stats' => $monthlyStats,
             'category_stats' => $categoryStats,
             'top_categories' => $topCategories,
+            'completion_rate_1' => $completion_rate_1,
+            'completion_rate_2' => $completion_rate_2,
+            'completion_rate_3' => $completion_rate_3,
         ]);
     }
 

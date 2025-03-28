@@ -58,18 +58,30 @@
 
         {# Overview Cards #}
         <div class="stats-grid">
+{#            <div class="stats-card">#}
+{#                <h3>Total Categories</h3>#}
+{#                <p class="display-4">{{ total_categories }}</p>#}
+{#            </div>#}
+{#            <div class="stats-card">#}
+{#                <h3>Active Categories</h3>#}
+{#                <p class="display-4">{{ active_categories }}</p>#}
+{#            </div>#}
             <div class="stats-card">
-                <h3>Total Categories</h3>
-                <p class="display-4">{{ total_categories }}</p>
-            </div>
-            <div class="stats-card">
-                <h3>Active Categories</h3>
-                <p class="display-4">{{ active_categories }}</p>
-            </div>
-            <div class="stats-card">
-                <h3>Completion Rate</h3>
+                <h3>Completion rate on 1</h3>
                 <p class="display-4">
-                    {{ total_categories ? (active_categories / total_categories * 100)|round }}%
+                    {{ completion_rate_1 }} %
+                </p>
+            </div>
+            <div class="stats-card">
+                <h3>Completion rate on 2</h3>
+                <p class="display-4">
+                    {{ completion_rate_2 }} %
+                </p>
+            </div>
+            <div class="stats-card">
+                <h3>Completion rate on 3</h3>
+                <p class="display-4">
+                    {{ completion_rate_3 }} %
                 </p>
             </div>
         </div>
