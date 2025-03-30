@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Entity\Quiz;
 use App\Form\QuizType;
 use App\Repository\QuizRepository;
+use App\Repository\QuizSessionRepository;
 use App\Repository\ResultMCQRepository;
 use App\Service\CheckService;
 use App\Service\QuizService;
 use App\Service\ResultMCQService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -102,47 +105,117 @@ class QuizController extends AbstractController
     }
 
     #[Route('/mcq/{max}', name: 'app_quiz_mcq', methods: ['GET', 'POST'])]
-    public function mcq(QuizRepository $quizRepository, Request $request, QuizService $quizService, ResultMCQService $resultMCQService, CheckService $checkService, int $max = 0): Response
-    {
-        $categoryId = $request->query->get('category');
-        $dailyProgress = $resultMCQService->getTodayProgressForCurrentUser();
-
-        if ($request->isMethod(Request::METHOD_POST)) {
-            $quizSent = $request->request->all();
-
-            $quiz = $quizRepository->findOneBy(['id' => $quizSent['id']]);
-
-            $goodResponse = $quizService->isMQCGood($quiz, $quizSent);
-            $resultMCQService->saveResultMCQ($quiz, $goodResponse);
-
-            // Refresh daily progress after saving result
+    public function mcq(
+        QuizRepository $quizRepository,
+        Request $request,
+        QuizService $quizService,
+        ResultMCQService $resultMCQService,
+        CheckService $checkService,
+        QuizSessionRepository $quizSessionRepository,
+        EntityManagerInterface $entityManager,
+        int $max = 0,
+    ): Response {
+        try {
+            $categoryId = $request->query->get('category');
             $dailyProgress = $resultMCQService->getTodayProgressForCurrentUser();
+            $session = null;
+
+            // Check if we're in a quiz session
+            if ($this->getUser()) {
+                $session = $quizSessionRepository->findActiveSessionForUser($this->getUser());
+
+                // If we have an active session and we're not in an AJAX request,
+                // redirect to the session play route
+                if ($session && !$request->isXmlHttpRequest()) {
+                    return $this->redirectToRoute('app_quiz_session_play', ['id' => $session->getId()]);
+                }
+            }
+
+            if ($request->isMethod(Request::METHOD_POST)) {
+                $quizSent = $request->request->all();
+
+                // Validate quiz ID
+                if (!isset($quizSent['id'])) {
+                    throw new \InvalidArgumentException('Quiz ID is required');
+                }
+
+                $quiz = $quizRepository->findOneBy(['id' => $quizSent['id']]);
+                if (!$quiz) {
+                    throw new \InvalidArgumentException('Quiz not found');
+                }
+
+                $goodResponse = $quizService->isMQCGood($quiz, $quizSent);
+
+                // Handle session mode
+                if ($session && $request->isXmlHttpRequest()) {
+                    if (!$session->isCompleted()) {
+                        if (!$goodResponse) {
+                            $session->loseLife();
+                            if (0 === $session->getCurrentLives()) {
+                                $session->setIsCompleted(true);
+                                $session->setIsWon(false);
+                            }
+                        } else {
+                            $session->incrementStreak();
+                        }
+
+                        $entityManager->flush();
+
+                        return new JsonResponse([
+                            'correct' => $goodResponse,
+                            'currentLives' => $session->getCurrentLives(),
+                            'currentStreak' => $session->getCurrentStreak(),
+                            'bestStreak' => $session->getBestStreak(),
+                            'gameOver' => $session->isCompleted(),
+                            'message' => $goodResponse ? 'Correct answer!' : 'Incorrect answer!',
+                        ]);
+                    } else {
+                        return new JsonResponse([
+                            'error' => 'Session is already completed',
+                            'gameOver' => true,
+                        ], Response::HTTP_BAD_REQUEST);
+                    }
+                }
+
+                $resultMCQService->saveResultMCQ($quiz, $goodResponse);
+                $dailyProgress = $resultMCQService->getTodayProgressForCurrentUser();
+
+                return $this->render('quiz/quiz.html.twig', [
+                    'quiz' => $quiz,
+                    'answers' => $quizService->getRightsAnswers($quiz),
+                    'goodResponse' => $goodResponse,
+                    'max' => $max,
+                    'check' => $checkService->isCheckQuiz(),
+                    'category' => $categoryId,
+                    'dailyProgress' => $dailyProgress,
+                ]);
+            }
+
+            $quizzes = $quizService->getQuizzes($max, $categoryId);
+            if (empty($quizzes)) {
+                throw new \RuntimeException('No quizzes available');
+            }
+
+            shuffle($quizzes);
+            $quiz = $quizzes[0];
+            $quizAnswersRandomised = $quizService->getRandomizedAnswers($quiz);
 
             return $this->render('quiz/quiz.html.twig', [
                 'quiz' => $quiz,
-                'answers' => $quizService->getRightsAnswers($quiz),
-                'goodResponse' => $goodResponse,
+                'answers' => $quizAnswersRandomised,
                 'max' => $max,
-                'check' => $checkService->isCheckQuiz(),
                 'category' => $categoryId,
                 'dailyProgress' => $dailyProgress,
             ]);
+        } catch (\Exception $e) {
+            if ($request->isXmlHttpRequest()) {
+                return new JsonResponse([
+                    'error' => $e->getMessage(),
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            throw $e;
         }
-
-        $quizzes = $quizService->getQuizzes($max, $categoryId);
-
-        shuffle($quizzes);
-        $quiz = $quizzes[0];
-
-        $quizAnswersRandomised = $quizService->getRandomizedAnswers($quiz);
-
-        return $this->render('quiz/quiz.html.twig', [
-            'quiz' => $quiz,
-            'answers' => $quizAnswersRandomised,
-            'max' => $max,
-            'category' => $categoryId,
-            'dailyProgress' => $dailyProgress,
-        ]);
     }
 
     #[Route('/exam/{max}/{number}', name: 'app_quiz_exam', methods: ['GET', 'POST'])]

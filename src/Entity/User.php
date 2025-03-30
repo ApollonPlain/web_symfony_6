@@ -38,9 +38,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: DailyQuizProgress::class, orphanRemoval: true)]
     private Collection $dailyQuizProgresses;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: QuizSession::class, orphanRemoval: true)]
+    private Collection $quizSessions;
+
     public function __construct()
     {
         $this->dailyQuizProgresses = new ArrayCollection();
+        $this->quizSessions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,6 +153,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($dailyQuizProgress->getUser() === $this) {
                 $dailyQuizProgress->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuizSession>
+     */
+    public function getQuizSessions(): Collection
+    {
+        return $this->quizSessions;
+    }
+
+    public function addQuizSession(QuizSession $quizSession): static
+    {
+        if (!$this->quizSessions->contains($quizSession)) {
+            $this->quizSessions->add($quizSession);
+            $quizSession->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizSession(QuizSession $quizSession): static
+    {
+        if ($this->quizSessions->removeElement($quizSession)) {
+            // set the owning side to null (unless already changed)
+            if ($quizSession->getUser() === $this) {
+                $quizSession->setUser(null);
             }
         }
 

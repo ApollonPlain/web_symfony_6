@@ -177,6 +177,51 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+
+        /* Session mode styles */
+        .session-info {
+            background: linear-gradient(45deg, #6c5ce7, #a367dc);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2);
+        }
+
+        .lives-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .life-heart {
+            color: #ff6b6b;
+            font-size: 1.5rem;
+            animation: pulse 1s infinite;
+        }
+
+        .life-heart.lost {
+            color: rgba(255, 255, 255, 0.3);
+            animation: none;
+        }
+
+        .streak-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .streak-flame {
+            color: #ffd93d;
+            font-size: 1.5rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 {% endblock %}
 
@@ -213,6 +258,22 @@
 
 {% block body %}
     <div class="quiz-container">
+        {% if session is defined and session is not null %}
+            <div class="session-info">
+                <div class="lives-container">
+                    <span>Lives:</span>
+                    {% for i in 1..session.maxLives %}
+                        <i class="fas fa-heart life-heart {% if i > session.currentLives %}lost{% endif %}"></i>
+                    {% endfor %}
+                </div>
+                <div class="streak-container">
+                    <i class="fas fa-fire streak-flame"></i>
+                    <span>Current Streak: {{ session.currentStreak }}</span>
+                    <span class="ms-3">Best Streak: {{ session.bestStreak }}</span>
+                </div>
+            </div>
+        {% endif %}
+
         {% if dailyProgress is defined and dailyProgress is not null %}
             <div class="daily-progress-container">
                 <div class="daily-progress-title">
@@ -373,7 +434,7 @@
                     </a>
                 </div>
             {% else %}
-                <form action="{{ path('app_quiz_mcq', {max: max, category: category}) }}" method="post" name="{{ quiz.id }}" class="mt-4">
+                <form action="{% block form_action %}{{ path('app_quiz_mcq', {max: max, category: category}) }}{% endblock %}" method="post" name="{{ quiz.id }}" class="mt-4" id="quizForm">
                     <input name="id" value="{{ quiz.id }}" class="d-none">
                     
                     <div class="answers-container">

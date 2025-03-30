@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Démarrer un Quiz Challenge{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .difficulty-cards {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .difficulty-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        
+        .difficulty-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .difficulty-card.easy {
+            background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+        }
+        
+        .difficulty-card.medium {
+            background: linear-gradient(135deg, #ffd3b6 0%, #ffaaa5 100%);
+        }
+        
+        .difficulty-card.hard {
+            background: linear-gradient(135deg, #ff8b94 0%, #ff6b6b 100%);
+        }
+        
+        .difficulty-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .lives-counter {
+            font-size: 2.5rem;
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .lives-counter i {
+            color: #ff4081;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .difficulty-description {
+            color: #666;
+            margin: 1rem 0;
+        }
+        
+        .start-btn {
+            background: #ff4081;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn:hover {
+            background: #f50057;
+            transform: translateY(-2px);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 992px) {
+            .difficulty-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .difficulty-card {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="text-center my-5">
+            <h1 class="mb-4">Choisissez votre niveau de difficulté</h1>
+            <p class="lead">Plus c'est difficile, moins vous aurez de vies pour réussir le quiz !</p>
+        </div>
+
+        <form action="{{ path('app_quiz_session_create') }}" method="post" class="difficulty-selection-form">
+            <div class="difficulty-cards">
+                {% for key, difficulty in difficulties %}
+                    <div class="difficulty-card {{ key }}" onclick="document.getElementById('difficulty_{{ key }}').click()">
+                        <input type="radio" name="difficulty" id="difficulty_{{ key }}" value="{{ difficulty.value }}" class="d-none" {% if key == 'medium' %}checked{% endif %}>
+                        <h3>{{ difficulty.name }}</h3>
+                        <div class="lives-counter">
+                            {% for i in 1..difficulty.lives %}
+                                <i class="fas fa-heart"></i>
+                            {% endfor %}
+                        </div>
+                        <p class="difficulty-description">{{ difficulty.description }}</p>
+                        <button type="submit" class="btn start-btn">
+                            Commencer
+                            <i class="fas fa-play ms-2"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.difficulty-card');
+            
+            cards.forEach(card => {
+                const radio = card.querySelector('input[type="radio"]');
+                
+                card.addEventListener('click', () => {
+                    // Uncheck all radios
+                    document.querySelectorAll('input[name="difficulty"]').forEach(r => r.checked = false);
+                    // Check the clicked one
+                    radio.checked = true;
+                });
+            });
+        });
+    </script>
+{% endblock %} 

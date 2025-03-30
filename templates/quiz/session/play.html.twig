@@ -1,0 +1,5 @@
+{% extends 'quiz/quiz.html.twig' %}
+
+{% block form_action %}{{ path('app_quiz_session_play', {'id': session.id, 'max': max, 'category': category}) }}{% endblock %}
+
+{# No need for additional blocks since quiz.html.twig handles everything #} 
