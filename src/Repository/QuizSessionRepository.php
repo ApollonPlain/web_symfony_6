@@ -44,4 +44,19 @@ class QuizSessionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findBestCumulateStreakForUser(int $userId, string $difficulty): ?QuizSession
+    {
+        return $this->createQueryBuilder('qs')
+            ->andWhere('qs.user = :userId')
+            ->andWhere('qs.difficulty = :difficulty')
+            ->andWhere('qs.isCompleted = :isCompleted')
+            ->setParameter('userId', $userId)
+            ->setParameter('difficulty', $difficulty)
+            ->setParameter('isCompleted', true)
+            ->orderBy('qs.cumulateStreak', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

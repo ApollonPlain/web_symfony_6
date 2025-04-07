@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\QuizSession;
 use App\Repository\QuizRepository;
+use App\Repository\QuizSessionRepository;
 use App\Service\CheckService;
 use App\Service\QuizService;
 use App\Service\ResultMCQService;
@@ -32,11 +33,17 @@ class QuizSessionController extends AbstractController
 
         return $this->render('quiz/session/start.html.twig', [
             'difficulties' => [
+                'very_easy' => [
+                    'name' => 'Très Facile',
+                    'lives' => QuizSession::LIVES_BY_DIFFICULTY[QuizSession::DIFFICULTY_VERY_EASY],
+                    'value' => QuizSession::DIFFICULTY_VERY_EASY,
+                    'description' => '5 vies pour commencer, parfait pour s\'entraîner',
+                ],
                 'easy' => [
                     'name' => 'Facile',
                     'lives' => QuizSession::LIVES_BY_DIFFICULTY[QuizSession::DIFFICULTY_EASY],
                     'value' => QuizSession::DIFFICULTY_EASY,
-                    'description' => '5 vies pour commencer, parfait pour s\'entraîner',
+                    'description' => '4 vies pour commencer, parfait pour s\'entraîner',
                 ],
                 'medium' => [
                     'name' => 'Normal',
@@ -106,6 +113,7 @@ class QuizSessionController extends AbstractController
             }
 
             $goodResponse = $quizService->isMQCGood($quiz, $quizSent);
+            $displayResult = false;
 
             // Update session state
             if (!$goodResponse) {
@@ -113,6 +121,7 @@ class QuizSessionController extends AbstractController
                 if (0 === $session->getCurrentLives()) {
                     $session->setIsCompleted(true);
                     $session->setIsWon(false);
+                    $displayResult = true;
                 }
             } else {
                 $session->incrementStreak();
@@ -145,6 +154,7 @@ class QuizSessionController extends AbstractController
                 'category' => $request->query->get('category'),
                 'dailyProgress' => $resultMCQService->getTodayProgressForCurrentUser(),
                 'check' => $checkService->isCheckQuiz(),
+                'displayResult' => $displayResult,
             ]);
         }
 
@@ -174,7 +184,7 @@ class QuizSessionController extends AbstractController
     }
 
     #[Route('/{id}/result', name: 'app_quiz_session_result', methods: ['GET'])]
-    public function result(QuizSession $session): Response
+    public function result(QuizSession $session, QuizSessionRepository $quizSessionRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -189,6 +199,10 @@ class QuizSessionController extends AbstractController
 
         return $this->render('quiz/session/result.html.twig', [
             'session' => $session,
+            'best_very_easy' => $quizSessionRepository->findBestCumulateStreakForUser($this->getUser()->getId(), QuizSession::DIFFICULTY_VERY_EASY),
+            'best_easy' => $quizSessionRepository->findBestCumulateStreakForUser($this->getUser()->getId(), QuizSession::DIFFICULTY_EASY),
+            'best_medium' => $quizSessionRepository->findBestCumulateStreakForUser($this->getUser()->getId(), QuizSession::DIFFICULTY_MEDIUM),
+            'best_hard' => $quizSessionRepository->findBestCumulateStreakForUser($this->getUser()->getId(), QuizSession::DIFFICULTY_HARD),
         ]);
     }
 }

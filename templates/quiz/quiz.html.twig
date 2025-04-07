@@ -268,7 +268,8 @@
                 </div>
                 <div class="streak-container">
                     <i class="fas fa-fire streak-flame"></i>
-                    <span>Current Streak: {{ session.currentStreak }}</span>
+                    <span>Cumulate Streak: {{ session.cumulateStreak }}</span>
+                    <span class="ms-3">Current Streak: {{ session.currentStreak }}</span>
                     <span class="ms-3">Best Streak: {{ session.bestStreak }}</span>
                 </div>
             </div>
@@ -303,18 +304,18 @@
             <div class="quiz-progress-bar"></div>
         </div>
         
-        <h1 class="text-center mb-4">
-            Question {{ quiz.id }} of {{ max }}
+{#        <h1 class="text-center mb-4">#}
+{#            Question {{ quiz.id }} of {{ max }}#}
             {% set correctAnswers = 0 %}
             {% for result in quiz.resultMCQs %}
                 {% if result.isCorrect %}
                     {% set correctAnswers = correctAnswers + 1 %}
                 {% endif %}
             {% endfor %}
-            <div class="mt-2">
+            <div class="text-center my-2">
                 <span class="badge bg-success">Answered correctly {{ correctAnswers }} times</span>
             </div>
-        </h1>
+{#        </h1>#}
         
         {% if quiz.category %}
             <div class="text-center mb-4">
@@ -432,6 +433,12 @@
                     <a href="{{ path('app_quiz_mcq', {max, category: category}) }}" class="btn btn-primary">
                         <i class="fas fa-forward"></i> Next Question
                     </a>
+
+                    {% if displayResult is defined and displayResult %}
+                        <a href="{{ path('app_quiz_session_result', {'id': session.id}) }}" class="btn btn-secondary">
+                            <i class="fas fa-forward"></i> Display Result
+                        </a>
+                    {% endif %}
                 </div>
             {% else %}
                 <form action="{% block form_action %}{{ path('app_quiz_mcq', {max: max, category: category}) }}{% endblock %}" method="post" name="{{ quiz.id }}" class="mt-4" id="quizForm">

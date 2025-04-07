@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/quiz')]
@@ -24,7 +25,7 @@ class QuizController extends AbstractController
     ) {
     }
 
-    //    #[Cache(smaxage: 60)]
+    #[Cache(smaxage: 60, public: true)]
     #[Route('/', name: 'app_quiz_index', methods: ['GET'])]
     public function index(QuizRepository $quizRepository, ResultMCQRepository $resultMCQRepository): Response
     {
@@ -36,17 +37,13 @@ class QuizController extends AbstractController
 
         $dateTime = new \DateTime();
 
-        $response = $this->render('quiz/index.html.twig', [
+        return $this->render('quiz/index.html.twig', [
             'time' => $dateTime->format('Y-m-d H:i:s'),
             'quizzes' => $quizzes,
             'count_results' => count($results),
             'count_results_true' => count($resultsTrue),
             'count_results_false' => count($resultsFalse),
         ]);
-        $response->setPublic();
-        $response->setMaxAge(30);
-
-        return $response;
     }
 
     #[Route('/new', name: 'app_quiz_new', methods: ['GET', 'POST'])]

@@ -1,0 +1,283 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de la session{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .dashboard-container {
+            padding: 2rem 0;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(120deg, #007bff, #00bcd4);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stats-card h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn-primary {
+            background: linear-gradient(45deg, #007bff, #00bcd4);
+            border: none;
+            color: white;
+        }
+        
+        .action-btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            border: none;
+            color: white;
+        }
+
+        .result-status {
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .result-status.success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .result-status.failure {
+            background: linear-gradient(45deg, #dc3545, #ff4444);
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: white;
+            color: #333;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container dashboard-container">
+
+
+        <!-- Result Status -->
+        <div class="result-status {% if session.isWon %}success{% else %}failure{% endif %}">
+            <h2 class="display-4 mb-3">
+                {% if session.isWon %}
+                    🎉 Félicitations !
+                {% else %}
+                    😔 Session terminée
+                {% endif %}
+            </h2>
+            <p class="lead mb-0">
+                {% if session.isWon %}
+                    Vous avez brillamment réussi cette session !
+                {% else %}
+                    Vous ferez mieux la prochaine fois !
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Result Header -->
+        <div class="dashboard-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0">Résultats de la session</h1>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    {% if app.user %}
+                        <span class="text-white">Connecté en tant que: {{ app.user.email }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Meilleure série</h3>
+                    <div class="stats-value">{{ session.bestStreak }} 🏆</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Série finale</h3>
+                    <div class="stats-value">{{ session.cumulateStreak }} 📈</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Niveau de difficulté</h3>
+                    <div class="difficulty-badge">
+                        {% if session.difficulty == 'very_easy' %}
+                            🌟 Très Facile
+                        {% elseif session.difficulty == 'easy' %}
+                            🌟🌟 Facile
+                        {% elseif session.difficulty == 'medium' %}
+                            🌟🌟🌟 Normal
+                        {% else %}
+                            🌟🌟🌟🌟 Difficile
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Header -->
+        <div class="dashboard-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0">Top résultats</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Meilleure série</h3>
+                    <div class="stats-value">{{ best_very_easy.bestStreak ?? 0 }} 🏆</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Série finale</h3>
+                    <div class="stats-value">{{ best_very_easy.cumulateStreak ?? 0 }} 📈</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Niveau de difficulté</h3>
+                    <div class="difficulty-badge">
+                            🌟 Très Facile
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Meilleure série</h3>
+                    <div class="stats-value">{{ best_easy.bestStreak }} 🏆</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Série finale</h3>
+                    <div class="stats-value">{{ best_easy.cumulateStreak }} 📈</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Niveau de difficulté</h3>
+                    <div class="difficulty-badge">
+                        🌟🌟 Facile
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Meilleure série</h3>
+                    <div class="stats-value">{{ best_medium.bestStreak }} 🏆</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Série finale</h3>
+                    <div class="stats-value">{{ best_medium.cumulateStreak }} 📈</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Niveau de difficulté</h3>
+                    <div class="difficulty-badge">
+                        🌟🌟 Normal
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Meilleure série</h3>
+                    <div class="stats-value">{{ best_hard.bestStreak }} 🏆</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Série finale</h3>
+                    <div class="stats-value">{{ best_hard.cumulateStreak }} 📈</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <h3>Niveau de difficulté</h3>
+                    <div class="difficulty-badge">
+                        🌟🌟🌟 Difficile
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-5">
+            <a href="{{ path('app_quiz_session_start') }}" 
+               class="btn action-btn action-btn-primary">
+                <i class="fas fa-redo me-2"></i>Nouvelle partie
+            </a>
+            <a href="{{ path('app_home') }}" 
+               class="btn action-btn action-btn-secondary">
+                <i class="fas fa-home me-2"></i>Accueil
+            </a>
+            <a href="{{ path('app_quiz_index') }}" 
+               class="btn action-btn action-btn-primary">
+                <i class="fas fa-list me-2"></i>Index des quiz
+            </a>
+        </div>
+    </div>
+{% endblock %} 

@@ -9,12 +9,14 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: QuizSessionRepository::class)]
 class QuizSession
 {
+    public const DIFFICULTY_VERY_EASY = 'very_easy';
     public const DIFFICULTY_EASY = 'easy';
     public const DIFFICULTY_MEDIUM = 'medium';
     public const DIFFICULTY_HARD = 'hard';
 
     public const LIVES_BY_DIFFICULTY = [
-        self::DIFFICULTY_EASY => 5,
+        self::DIFFICULTY_VERY_EASY => 5,
+        self::DIFFICULTY_EASY => 4,
         self::DIFFICULTY_MEDIUM => 3,
         self::DIFFICULTY_HARD => 2,
     ];
@@ -39,6 +41,14 @@ class QuizSession
 
     #[ORM\Column]
     private ?int $bestStreak = 0;
+
+    #[ORM\Column]
+    private int $cumulateStreak = 0;
+
+    public function getCumulateStreak(): int
+    {
+        return $this->cumulateStreak;
+    }
 
     #[ORM\Column(type: Types::STRING, length: 20)]
     private ?string $difficulty = self::DIFFICULTY_MEDIUM;
@@ -210,12 +220,13 @@ class QuizSession
     public function incrementStreak(): static
     {
         ++$this->currentStreak;
+        ++$this->cumulateStreak;
         if ($this->currentStreak > $this->bestStreak) {
             $this->bestStreak = $this->currentStreak;
         }
 
         // Bonus life for every 5 correct answers in a row
-        if (0 === $this->currentStreak % 5 && $this->currentLives < $this->maxLives) {
+        if (0 === $this->currentStreak % 4 && $this->currentLives < $this->maxLives) {
             ++$this->currentLives;
         }
 
