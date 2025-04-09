@@ -122,6 +122,18 @@
             </div>
         </div>
 
+        {# Monthly Answer Statistics #}
+        <div class="chart-container mb-4">
+            <h3>Monthly Answer Statistics</h3>
+            <canvas id="monthlyAnswerStatsChart"></canvas>
+        </div>
+
+        {# Weekly Answer Statistics #}
+        <div class="chart-container mb-4">
+            <h3>Weekly Answer Statistics (Last 12 Weeks)</h3>
+            <canvas id="weeklyAnswerStatsChart"></canvas>
+        </div>
+
         {# Monthly Creation Trend #}
         <div class="chart-container mb-4">
             <h3>Category Creation Trend</h3>
@@ -193,6 +205,126 @@
                             beginAtZero: true,
                             ticks: {
                                 stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Monthly Answer Statistics Chart
+            const monthlyAnswerCtx = document.getElementById('monthlyAnswerStatsChart').getContext('2d');
+            new Chart(monthlyAnswerCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ monthly_answer_stats|map(s => s.month)|json_encode|raw }},
+                    datasets: [{
+                        label: 'Total Answers',
+                        data: {{ monthly_answer_stats|map(s => s.statistics.total)|json_encode|raw }},
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Correct Answers',
+                        data: {{ monthly_answer_stats|map(s => s.statistics.correct)|json_encode|raw }},
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Success Rate (%)',
+                        data: {{ monthly_answer_stats|map(s => s.statistics.success_rate)|json_encode|raw }},
+                        type: 'line',
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        yAxisID: 'percentage'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Monthly Answer Statistics (Last 6 Months)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Number of Answers'
+                            }
+                        },
+                        percentage: {
+                            beginAtZero: true,
+                            position: 'right',
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Success Rate (%)'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Weekly Answer Statistics Chart
+            const weeklyAnswerCtx = document.getElementById('weeklyAnswerStatsChart').getContext('2d');
+            new Chart(weeklyAnswerCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ weekly_answer_stats|map(s => 'Week ' ~ s.week_number ~ ' (' ~ s.statistics.week_range ~ ')')|json_encode|raw }},
+                    datasets: [{
+                        label: 'Total Answers',
+                        data: {{ weekly_answer_stats|map(s => s.statistics.total)|json_encode|raw }},
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Correct Answers',
+                        data: {{ weekly_answer_stats|map(s => s.statistics.correct)|json_encode|raw }},
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Success Rate (%)',
+                        data: {{ weekly_answer_stats|map(s => s.statistics.success_rate)|json_encode|raw }},
+                        type: 'line',
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        yAxisID: 'percentage'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Weekly Answer Statistics (Last 12 Weeks)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Number of Answers'
+                            }
+                        },
+                        percentage: {
+                            beginAtZero: true,
+                            position: 'right',
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Success Rate (%)'
+                            },
+                            grid: {
+                                drawOnChartArea: false
                             }
                         }
                     }

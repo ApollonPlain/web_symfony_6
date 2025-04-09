@@ -226,7 +226,7 @@ class QuizSession
         }
 
         // Bonus life for every 5 correct answers in a row
-        if (0 === $this->currentStreak % 4 && $this->currentLives < $this->maxLives) {
+        if (0 === $this->cumulateStreak % 5 && $this->currentLives < $this->maxLives) {
             ++$this->currentLives;
         }
 

@@ -53,6 +53,77 @@ class ResultMCQRepository extends ServiceEntityRepository
         return count($subquery);
     }
 
+    public function countAnswersByMonth(\DateTime $date): array
+    {
+        $startOfMonth = clone $date;
+        $startOfMonth->setTime(0, 0, 0);
+
+        $endOfMonth = clone $date;
+        $endOfMonth->modify('last day of this month');
+        $endOfMonth->setTime(23, 59, 59);
+
+        $totalCount = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.datetime >= :start')
+            ->andWhere('r.datetime <= :end')
+            ->setParameter('start', $startOfMonth)
+            ->setParameter('end', $endOfMonth)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $correctCount = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.datetime >= :start')
+            ->andWhere('r.datetime <= :end')
+            ->andWhere('r.isCorrect = true')
+            ->setParameter('start', $startOfMonth)
+            ->setParameter('end', $endOfMonth)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return [
+            'total' => (int) $totalCount,
+            'correct' => (int) $correctCount,
+            'success_rate' => $totalCount > 0 ? round(($correctCount / $totalCount) * 100, 1) : 0,
+        ];
+    }
+
+    public function countAnswersByWeek(\DateTime $weekStart): array
+    {
+        $startOfWeek = clone $weekStart;
+        $startOfWeek->setTime(0, 0, 0);
+
+        $endOfWeek = clone $startOfWeek;
+        $endOfWeek->modify('+6 days');
+        $endOfWeek->setTime(23, 59, 59);
+
+        $totalCount = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.datetime >= :start')
+            ->andWhere('r.datetime <= :end')
+            ->setParameter('start', $startOfWeek)
+            ->setParameter('end', $endOfWeek)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $correctCount = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.datetime >= :start')
+            ->andWhere('r.datetime <= :end')
+            ->andWhere('r.isCorrect = true')
+            ->setParameter('start', $startOfWeek)
+            ->setParameter('end', $endOfWeek)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return [
+            'week_range' => $startOfWeek->format('M d').' - '.$endOfWeek->format('M d'),
+            'total' => (int) $totalCount,
+            'correct' => (int) $correctCount,
+            'success_rate' => $totalCount > 0 ? round(($correctCount / $totalCount) * 100, 1) : 0,
+        ];
+    }
+
     //    /**
     //     * @return ResultMCQ[] Returns an array of ResultMCQ objects
     //     */

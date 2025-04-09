@@ -63,6 +63,28 @@ class CategoryController extends AbstractController
             ];
         }
 
+        // Get monthly answer statistics (last 6 months)
+        $monthlyAnswerStats = [];
+        for ($i = 5; $i >= 0; --$i) {
+            $date = new \DateTime("first day of -$i month");
+            $monthlyAnswerStats[] = [
+                'month' => $date->format('M Y'),
+                'statistics' => $resultMCQRepository->countAnswersByMonth($date),
+            ];
+        }
+
+        // Get weekly answer statistics (last 12 weeks)
+        $weeklyAnswerStats = [];
+        for ($i = 11; $i >= 0; --$i) {
+            $date = new \DateTime();
+            $date->modify("-$i week");
+            $date->modify('monday this week'); // Start each week on Monday
+            $weeklyAnswerStats[] = [
+                'week_number' => $date->format('W'),
+                'statistics' => $resultMCQRepository->countAnswersByWeek($date),
+            ];
+        }
+
         // Get detailed statistics for each category
         $categoryStats = [];
         foreach ($categories as $category) {
@@ -88,6 +110,8 @@ class CategoryController extends AbstractController
             'total_categories' => $totalCategories,
             'active_categories' => $activeCategories,
             'monthly_stats' => $monthlyStats,
+            'monthly_answer_stats' => $monthlyAnswerStats,
+            'weekly_answer_stats' => $weeklyAnswerStats,
             'category_stats' => $categoryStats,
             'top_categories' => $topCategories,
             'completion_rate_1' => $completion_rate_1,

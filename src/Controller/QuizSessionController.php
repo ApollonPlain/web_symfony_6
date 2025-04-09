@@ -161,7 +161,14 @@ class QuizSessionController extends AbstractController
         // Handle GET request (show new question)
         $dailyProgress = $resultMCQService->getTodayProgressForCurrentUser();
         $categoryId = $request->query->get('category');
-        $max = $request->query->get('max', 0);
+
+        $random = mt_rand(1, 100);
+        $max = match (true) {
+            $random <= 20 => 1,
+            $random <= 35 => 2,
+            $random <= 50 => 3,
+            default => mt_rand(4, 30),
+        };
 
         $quizzes = $quizService->getQuizzes($max, $categoryId);
         if (empty($quizzes)) {
