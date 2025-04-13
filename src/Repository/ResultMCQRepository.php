@@ -124,6 +124,42 @@ class ResultMCQRepository extends ServiceEntityRepository
         ];
     }
 
+    public function countAnswersByDay(\DateTime $date): array
+    {
+        $startOfDay = clone $date;
+        $startOfDay->setTime(0, 0, 0);
+
+        $endOfDay = clone $startOfDay;
+        $endOfDay->setTime(23, 59, 59);
+
+        $totalCount = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.datetime >= :start')
+            ->andWhere('r.datetime <= :end')
+            ->setParameter('start', $startOfDay)
+            ->setParameter('end', $endOfDay)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $correctCount = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.datetime >= :start')
+            ->andWhere('r.datetime <= :end')
+            ->andWhere('r.isCorrect = true')
+            ->setParameter('start', $startOfDay)
+            ->setParameter('end', $endOfDay)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return [
+            'date' => $startOfDay->format('Y-m-d'),
+            'formatted_date' => $startOfDay->format('M d'),
+            'total' => (int) $totalCount,
+            'correct' => (int) $correctCount,
+            'success_rate' => $totalCount > 0 ? round(($correctCount / $totalCount) * 100, 1) : 0,
+        ];
+    }
+
     //    /**
     //     * @return ResultMCQ[] Returns an array of ResultMCQ objects
     //     */

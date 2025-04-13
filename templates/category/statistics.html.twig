@@ -133,7 +133,11 @@
             <h3>Weekly Answer Statistics (Last 12 Weeks)</h3>
             <canvas id="weeklyAnswerStatsChart"></canvas>
         </div>
-
+        
+        <div class="chart-container mb-4">
+            <h3>Daily Answer Statistics (Last 15 Days)</h3>
+            <canvas id="dailyAnswerChart" ></canvas>
+        </div>
         {# Monthly Creation Trend #}
         <div class="chart-container mb-4">
             <h3>Category Creation Trend</h3>
@@ -174,6 +178,8 @@
                 </div>
             {% endfor %}
         </div>
+
+
     </div>
 
     <script>
@@ -373,6 +379,66 @@
                     });
                 {% endif %}
             {% endfor %}
+
+            // Daily Answer Statistics Chart
+            const dailyAnswerCtx = document.getElementById('dailyAnswerChart').getContext('2d');
+            const dailyAnswerChart = new Chart(dailyAnswerCtx, {
+                type: 'line',
+                data: {
+                    labels: {{ daily_answer_stats|map(stat => stat.formatted_date)|json_encode|raw }},
+                    datasets: [
+                        {
+                            label: 'Total Answers',
+                            data: {{ daily_answer_stats|map(stat => stat.total)|json_encode|raw }},
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1,
+                            fill: false
+                        },
+                        {
+                            label: 'Correct Answers',
+                            data: {{ daily_answer_stats|map(stat => stat.correct)|json_encode|raw }},
+                            borderColor: 'rgb(54, 162, 235)',
+                            tension: 0.1,
+                            fill: false
+                        },
+                        {
+                            label: 'Success Rate (%)',
+                            data: {{ daily_answer_stats|map(stat => stat.success_rate)|json_encode|raw }},
+                            borderColor: 'rgb(255, 99, 132)',
+                            tension: 0.1,
+                            fill: false,
+                            yAxisID: 'percentage'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Answers'
+                            }
+                        },
+                        percentage: {
+                            position: 'right',
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Success Rate (%)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Daily Answer Statistics'
+                        }
+                    }
+                }
+            });
         });
     </script>
 {% endblock %} 

@@ -85,6 +85,14 @@ class CategoryController extends AbstractController
             ];
         }
 
+        // Get daily answer statistics (last 15 days)
+        $dailyAnswerStats = [];
+        for ($i = 14; $i >= 0; --$i) {
+            $date = new \DateTime();
+            $date->modify("-$i days");
+            $dailyAnswerStats[] = $resultMCQRepository->countAnswersByDay($date);
+        }
+
         // Get detailed statistics for each category
         $categoryStats = [];
         foreach ($categories as $category) {
@@ -112,6 +120,7 @@ class CategoryController extends AbstractController
             'monthly_stats' => $monthlyStats,
             'monthly_answer_stats' => $monthlyAnswerStats,
             'weekly_answer_stats' => $weeklyAnswerStats,
+            'daily_answer_stats' => $dailyAnswerStats,
             'category_stats' => $categoryStats,
             'top_categories' => $topCategories,
             'completion_rate_1' => $completion_rate_1,
